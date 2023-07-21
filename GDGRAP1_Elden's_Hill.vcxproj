@@ -136,17 +136,25 @@
     <ClCompile Include="glad.c" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Model\Camera.cpp" />
+    <ClCompile Include="Model\Camera\OrthoCamera.cpp" />
+    <ClCompile Include="Model\Camera\PerspectiveCamera.cpp" />
     <ClCompile Include="Model\Light.cpp" />
+    <ClCompile Include="Model\Light\DirectionLight.cpp" />
+    <ClCompile Include="Model\Light\PointLight.cpp" />
     <ClCompile Include="Model\Model3D.cpp" />
-    <ClCompile Include="Model\Player.cpp" />
-    <ClCompile Include="Shaders\Shaders.cpp" />
+    <ClCompile Include="Model\Object\Player.cpp" />
+    <ClCompile Include="Model\Shaders.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Model\Camera.hpp" />
+    <ClInclude Include="Model\Camera\OrthoCamera.hpp" />
+    <ClInclude Include="Model\Camera\PerspectiveCamera.hpp" />
     <ClInclude Include="Model\Light.hpp" />
+    <ClInclude Include="Model\Light\DirectionLight.hpp" />
+    <ClInclude Include="Model\Light\PointLight.hpp" />
     <ClInclude Include="Model\Model3D.hpp" />
-    <ClInclude Include="Model\Player.hpp" />
-    <ClInclude Include="Shaders\Shaders.hpp" />
+    <ClInclude Include="Model\Object\Player.hpp" />
+    <ClInclude Include="Model\Shaders.hpp" />
     <ClInclude Include="stb_image.h" />
     <ClInclude Include="tiny_obj_loader.h" />
   </ItemGroup>
