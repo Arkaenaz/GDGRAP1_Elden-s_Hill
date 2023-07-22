@@ -21,6 +21,9 @@
     <ClCompile Include="glad.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Model\Model3D.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="Model\Shaders.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -45,7 +48,13 @@
     <ClCompile Include="Model\Light\PointLight.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Model\Model3D.cpp">
+    <ClCompile Include="Source.cpp">
+      <Filter>Header Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Model\Tank\TankBody.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Model\Tank\TankTurret.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -54,6 +63,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="tiny_obj_loader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Model\Model3D.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Model\Camera.hpp">
@@ -83,7 +95,10 @@
     <ClInclude Include="Config\Settings.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Model\Model3D.hpp">
+    <ClInclude Include="Model\Tank\TankBody.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Model\Tank\TankTurret.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

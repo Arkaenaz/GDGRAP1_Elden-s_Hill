@@ -27,6 +27,8 @@
 #include "Model/Light/PointLight.hpp"
 
 #include "Model/Shaders.hpp"
+#include "Model/Tank/TankBody.hpp"
+#include "Model/Tank/TankTurret.hpp"
 
 using namespace models;
 using namespace cameras;
@@ -61,10 +63,13 @@ int main() {
     double deltaTime;
 
     Shaders* pShaders = new Shaders("Shaders/sample.vert", "Shaders/sample.frag");
-    PerspectiveCamera* pPerspectiveCamera = new PerspectiveCamera(glm::vec3(0.f, 30.f, 100.f), glm::vec3(0.f, 3.0f, 0.f), glm::normalize(glm::vec3(0.f, 1.0f, 0.f)), 60.0f, 1000.0f);
-    Model3D* pModel = new Model3D("3D/octopus_toy.obj", "3D/octopus_toy_texture.png", glm::vec3(0.0f, 0.f, 10.f), glm::vec3(1.0f));
+    PerspectiveCamera* pPerspectiveCamera = new PerspectiveCamera(glm::vec3(400.f, 400.f, 500.f), glm::vec3(0.f, 3.0f, 0.f), glm::normalize(glm::vec3(0.f, 1.0f, 0.f)), 60.0f, 1000.0f);
+    TankBody *pTankBody = new TankBody("3D/T-34/T-34/T-34.obj", "3D/T-34/T-34/tex/T-34_Body.jpg", glm::vec3(0.0f, 0.f, 0.f), glm::vec3(.5f));
+    TankTurret *pTankTurret = new TankTurret("3D/T-34/T-34/T-34.obj", "3D/T-34/T-34/tex/T-34_Body.jpg", glm::vec3(0.0f, 0.f, 0.f), glm::vec3(.5f));
 
-    DirectionLight* pDirectionLight = new DirectionLight(glm::vec3(4, 11, -3), glm::vec3(1, 1, 1), 0.1f, glm::vec3(1, 1, 1), 0.5f, 16);
+    pTankTurret->rotate(glm::vec3(0,90,0));
+
+    DirectionLight* pDirectionLight = new DirectionLight(glm::vec3(4, 11, -3), glm::vec3(1, 1, 1), 1.f, glm::vec3(1, 1, 1), 0.5f, 16);
 
     /* Loop until the user closes the window */
     while (!glfwWindowShouldClose(window))
@@ -89,12 +94,10 @@ int main() {
         pShaders->setFloat("specStr", pDirectionLight->getSpecStrength());
         pShaders->setFloat("specPhong", pDirectionLight->getSpecPhong());
 
-        pShaders->setFloatMat4("transform", pModel->getTransformation());
-        glBindTexture(GL_TEXTURE_2D, pModel->getTexture());
-        pShaders->setInt("tex0", 0);
-        pShaders->setFloatVec3("objColor", pModel->getColor());
+        
 
-        pModel->draw(*pShaders);
+        pTankBody->draw(pShaders);
+        pTankTurret->draw(pShaders);
 
         /* Swap front and back buffers */
         glfwSwapBuffers(window);

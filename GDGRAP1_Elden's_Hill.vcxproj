@@ -144,6 +144,9 @@
     <ClCompile Include="Model\Model3D.cpp" />
     <ClCompile Include="Model\Object\Player.cpp" />
     <ClCompile Include="Model\Shaders.cpp" />
+    <ClCompile Include="Model\Tank\TankBody.cpp" />
+    <ClCompile Include="Model\Tank\TankTurret.cpp" />
+    <ClCompile Include="Source.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Config\Settings.hpp" />
@@ -156,6 +159,8 @@
     <ClInclude Include="Model\Model3D.hpp" />
     <ClInclude Include="Model\Object\Player.hpp" />
     <ClInclude Include="Model\Shaders.hpp" />
+    <ClInclude Include="Model\Tank\TankBody.hpp" />
+    <ClInclude Include="Model\Tank\TankTurret.hpp" />
     <ClInclude Include="stb_image.h" />
     <ClInclude Include="tiny_obj_loader.h" />
   </ItemGroup>

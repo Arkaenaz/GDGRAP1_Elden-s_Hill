@@ -23,7 +23,7 @@
 
 namespace models {
 	class Model3D {
-		private:
+		protected:
 			GLuint texture;
 			std::vector<GLuint> meshIndices;
 			std::vector<GLfloat> fullVertexData;
@@ -42,13 +42,13 @@ namespace models {
 		public:
 			Model3D(std::string strObjectPath, std::string strTexturePath, glm::vec3 vecPosition, glm::vec3 vecScale);
 
-		private:
+		protected:
 			void loadTexture(const char* texturePath);
-			void loadModel(const char* objectPath);
+			virtual void loadModel(const char* objectPath) = 0;
 			void setupVAO();
 
 		public:
-			void draw(Shaders& CShaders);
+			void draw(Shaders *CShaders);
 
 		public:
 			void move(glm::vec3 vecMove);

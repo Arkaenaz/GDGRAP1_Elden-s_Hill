@@ -1,11 +1,13 @@
 #include "Model3D.hpp"
 
+#include "iostream"
+
 using namespace models;
 
 Model3D::Model3D(std::string strObjectPath, std::string strTexturePath, glm::vec3 vecPosition, glm::vec3 vecScale) {
     this->loadTexture(strTexturePath.c_str());
-    this->loadModel(strObjectPath.c_str());
-    this->setupVAO();
+    //this->loadModel(strObjectPath.c_str());
+    
 
     this->vecPosition = vecPosition;
     this->vecScale = vecScale;
@@ -37,31 +39,35 @@ void Model3D::loadTexture(const char* texturePath) {
     stbi_image_free(tex_bytes);
 }
 
-void Model3D::loadModel(const char* objectPath) {
-    std::vector<tinyobj::shape_t> shape;
-    std::vector<tinyobj::material_t> material;
-    std::string warning, error;
-
-    tinyobj::attrib_t attributes;
-
-    bool success = tinyobj::LoadObj(&attributes, &shape, &material, &warning, &error, objectPath);
-
-    for (int i = 0; i < shape[0].mesh.indices.size(); i++) {
-        this->meshIndices.push_back(shape[0].mesh.indices[i].vertex_index);
-    }
-
-    for (int i = 0; i < shape[0].mesh.indices.size(); i++) {
-        tinyobj::index_t vData = shape[0].mesh.indices[i];
-        this->fullVertexData.push_back(attributes.vertices[vData.vertex_index * 3]);
-        this->fullVertexData.push_back(attributes.vertices[vData.vertex_index * 3 + 1]);
-        this->fullVertexData.push_back(attributes.vertices[vData.vertex_index * 3 + 2]);
-        this->fullVertexData.push_back(attributes.normals[vData.normal_index * 3]);
-        this->fullVertexData.push_back(attributes.normals[vData.normal_index * 3 + 1]);
-        this->fullVertexData.push_back(attributes.normals[vData.normal_index * 3 + 2]);
-        this->fullVertexData.push_back(attributes.texcoords[vData.texcoord_index * 2]);
-        this->fullVertexData.push_back(attributes.texcoords[vData.texcoord_index * 2 + 1]);
-    }
-}
+//void Model3D::loadModel(const char* objectPath) {
+//    std::vector<tinyobj::shape_t> shape;
+//    std::vector<tinyobj::material_t> material;
+//    std::string warning, error;
+//
+//    tinyobj::attrib_t attributes;
+//
+//    bool success = tinyobj::LoadObj(&attributes, &shape, &material, &warning, &error, objectPath);
+//
+//    std::cout << shape.size() << std::endl;
+//
+//    /*for (int i = 0; i < shape[0].mesh.indices.size(); i++) {
+//        this->meshIndices.push_back(shape[0].mesh.indices[i].vertex_index);
+//    }*/
+//
+//    for(int j = 0; j < shape.size(); j++) {
+//        for(int i = 0; i < shape[14].mesh.indices.size(); i++) {
+//            tinyobj::index_t vData = shape[14].mesh.indices[i];
+//            this->fullVertexData.push_back(attributes.vertices[vData.vertex_index * 3]);
+//            this->fullVertexData.push_back(attributes.vertices[vData.vertex_index * 3 + 1]);
+//            this->fullVertexData.push_back(attributes.vertices[vData.vertex_index * 3 + 2]);
+//            //this->fullVertexData.push_back(attributes.normals[vData.normal_index * 3]);
+//            //this->fullVertexData.push_back(attributes.normals[vData.normal_index * 3 + 1]);
+//            //this->fullVertexData.push_back(attributes.normals[vData.normal_index * 3 + 2]);
+//            this->fullVertexData.push_back(attributes.texcoords[vData.texcoord_index * 2]);
+//            this->fullVertexData.push_back(attributes.texcoords[vData.texcoord_index * 2 + 1]);
+//        }
+//    }
+//}
 
 void Model3D::setupVAO() {
     GLuint VBO;
@@ -73,16 +79,16 @@ void Model3D::setupVAO() {
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
     glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * this->fullVertexData.size(), this->fullVertexData.data(), GL_STATIC_DRAW);
 
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (void*)0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), (void*)0);
 
-    GLintptr normPtr = 3 * sizeof(float);
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)normPtr);
+    //GLintptr normPtr = 3 * sizeof(float);
+    //glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)normPtr);
 
-    GLintptr uvPtr = 6 * sizeof(float);
-    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)uvPtr);
+    GLintptr uvPtr = 3 * sizeof(float);
+    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)uvPtr);
 
     glEnableVertexAttribArray(0);
-    glEnableVertexAttribArray(1);
+    //glEnableVertexAttribArray(1);
     glEnableVertexAttribArray(2);
 
     glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -145,10 +151,15 @@ void Model3D::rotateAround(glm::vec3 vecPoint, glm::vec3 vecRotate) {
 /*
     Draws the model
 */
-void Model3D::draw(Shaders &CShaders) {
+void Model3D::draw(Shaders *CShaders) {
+    CShaders->setFloatMat4("transform", this->getTransformation());
+    glBindTexture(GL_TEXTURE_2D, this->getTexture());
+    CShaders->setInt("tex0", 0);
+    CShaders->setFloatVec3("objColor", this->getColor());
+
     glBindTexture(GL_TEXTURE_2D, this->texture);
     glBindVertexArray(this->VAO);
-    glDrawArrays(GL_TRIANGLES, 0, this->fullVertexData.size() / 8);
+    glDrawArrays(GL_TRIANGLES, 0, this->fullVertexData.size() / 5);
 }
 
 std::vector<GLuint> Model3D::getMeshIndices() {
