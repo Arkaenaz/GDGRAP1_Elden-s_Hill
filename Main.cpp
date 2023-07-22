@@ -55,6 +55,8 @@ int main() {
     gladLoadGL();
 
     glEnable(GL_DEPTH_TEST);
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
     glViewport(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
 
@@ -64,12 +66,15 @@ int main() {
 
     Shaders* pShaders = new Shaders("Shaders/sample.vert", "Shaders/sample.frag");
     PerspectiveCamera* pPerspectiveCamera = new PerspectiveCamera(glm::vec3(400.f, 400.f, 500.f), glm::vec3(0.f, 3.0f, 0.f), glm::normalize(glm::vec3(0.f, 1.0f, 0.f)), 60.0f, 1000.0f);
-    TankBody *pTankBody = new TankBody("3D/T-34/T-34/T-34.obj", "3D/T-34/T-34/tex/T-34_Body.jpg", glm::vec3(0.0f, 0.f, 0.f), glm::vec3(.5f));
-    TankTurret *pTankTurret = new TankTurret("3D/T-34/T-34/T-34.obj", "3D/T-34/T-34/tex/T-34_Body.jpg", glm::vec3(0.0f, 0.f, 0.f), glm::vec3(.5f));
+    TankBody *pTankBody = new TankBody("3D/T-34/T-34/T-34.obj", glm::vec3(0.0f, 0.f, 0.f), glm::vec3(.5f));
+    TankTurret *pTankTurret = new TankTurret("3D/T-34/T-34/T-34.obj", glm::vec3(0.0f, 0.f, 0.f), glm::vec3(.5f));
+    pTankBody->addTexture("3D/T-34/T-34/tex/T-34_Body.jpg");
+    pTankTurret->addTexture("3D/T-34/T-34/tex/T-34_Body.jpg");
 
     pTankTurret->rotate(glm::vec3(0,90,0));
 
     DirectionLight* pDirectionLight = new DirectionLight(glm::vec3(4, 11, -3), glm::vec3(1, 1, 1), 1.f, glm::vec3(1, 1, 1), 0.5f, 16);
+
 
     /* Loop until the user closes the window */
     while (!glfwWindowShouldClose(window))
@@ -94,6 +99,7 @@ int main() {
         pShaders->setFloat("specStr", pDirectionLight->getSpecStrength());
         pShaders->setFloat("specPhong", pDirectionLight->getSpecPhong());
 
+        
         
 
         pTankBody->draw(pShaders);

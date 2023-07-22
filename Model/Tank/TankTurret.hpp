@@ -9,7 +9,7 @@ namespace models {
 
 
 		public:
-		TankTurret(std::string strObjectPath, std::string strTexturePath, glm::vec3 vecPosition, glm::vec3 vecScale);
+		TankTurret(std::string strObjectPath, glm::vec3 vecPosition, glm::vec3 vecScale);
 
 		void loadModel(const char *objectPath);
 	};
