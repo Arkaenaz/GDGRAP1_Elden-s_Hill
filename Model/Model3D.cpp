@@ -3,56 +3,44 @@
 using namespace models;
 
 Model3D::Model3D(std::string strObjectPath, std::string strTexturePath, glm::vec3 vecPosition, glm::vec3 vecScale) {
-    //this->strPath = strPath;
-    //this->mesh_indices = mesh_indices;
-    //this->fullVertexData = fullVertexData;
-    this->texture = loadTexture(strTexturePath.c_str());
-
-    //this->loadTexture(strTexturePath.c_str());
-    this->loadModel(strObjectPath);
+    this->loadTexture(strTexturePath.c_str());
+    this->loadModel(strObjectPath.c_str());
+    //this->setupVAO();
 
     this->vecPosition = vecPosition;
     this->vecScale = vecScale;
 
-    this->matTranslate = glm::mat4(1.0f);
+    this->matTranslate = glm::translate(glm::mat4(1.0f), this->vecPosition);
+    this->matScale = glm::scale(glm::mat4(1.0f), this->vecScale);
     this->matRotate = glm::mat4(1.0f);
-    this->matScale = glm::mat4(1.0f);
 }
 
-GLuint loadTexture(const char* strTexturePath) {
+void Model3D::loadTexture(const char* texturePath) {
     int img_width, img_height, colorChannels;
     stbi_set_flip_vertically_on_load(true);
-    unsigned char* tex_bytes = stbi_load(strTexturePath, &img_width, &img_height, &colorChannels, 4);
+    unsigned char* tex_bytes = stbi_load(texturePath, &img_width, &img_height, &colorChannels, 4);
 
-    GLuint texture;
-    glGenTextures(1, &texture);
-    
-    glBindTexture(GL_TEXTURE_2D, texture);
+    glGenTextures(1, &this->texture);
+    glBindTexture(GL_TEXTURE_2D, this->texture);
+    glActiveTexture(GL_TEXTURE0);
 
-    // Depending on bool value, it would either choose RGB or RGBA
-    //if (bAlpha)
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, img_width, img_height, 0, GL_RGBA, GL_UNSIGNED_BYTE, tex_bytes);
-    //else
-    //    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, img_width, img_height, 0, GL_RGB, GL_UNSIGNED_BYTE, tex_bytes);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, img_width, img_height, 0, GL_RGBA, GL_UNSIGNED_BYTE, tex_bytes);
 
     glGenerateMipmap(GL_TEXTURE_2D);
     stbi_image_free(tex_bytes);
-
-    return texture;
 }
 
-void Model3D::loadModel(const std::string& strObjectPath) {
+void Model3D::loadModel(const char* objectPath) {
     std::vector<tinyobj::shape_t> shape;
     std::vector<tinyobj::material_t> material;
     std::string warning, error;
 
     tinyobj::attrib_t attributes;
 
-    bool success = tinyobj::LoadObj(&attributes, &shape, &material, &warning, &error, strObjectPath.c_str());
+    bool success = tinyobj::LoadObj(&attributes, &shape, &material, &warning, &error, objectPath);
 
-    this->mesh_indices;
     for (int i = 0; i < shape[0].mesh.indices.size(); i++) {
-        this->mesh_indices.push_back(shape[0].mesh.indices[i].vertex_index);
+        this->meshIndices.push_back(shape[0].mesh.indices[i].vertex_index);
     }
 
     for (int i = 0; i < shape[0].mesh.indices.size(); i++) {
@@ -66,6 +54,30 @@ void Model3D::loadModel(const std::string& strObjectPath) {
         this->fullVertexData.push_back(attributes.texcoords[vData.texcoord_index * 2]);
         this->fullVertexData.push_back(attributes.texcoords[vData.texcoord_index * 2 + 1]);
     }
+}
+
+void Model3D::setupVAO() {
+    glGenVertexArrays(1, &this->VAO);
+    glGenBuffers(1, &this->VBO);
+
+    glBindVertexArray(this->VAO);
+    glBindBuffer(GL_ARRAY_BUFFER, this->VBO);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * this->fullVertexData.size(), this->fullVertexData.data(), GL_STATIC_DRAW);
+
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (void*)0);
+
+    GLintptr normPtr = 3 * sizeof(float);
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)normPtr);
+
+    GLintptr uvPtr = 6 * sizeof(float);
+    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)uvPtr);
+
+    glEnableVertexAttribArray(0);
+    glEnableVertexAttribArray(1);
+    glEnableVertexAttribArray(2);
+
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glBindVertexArray(0);
 }
 
 /*
@@ -124,18 +136,13 @@ void Model3D::rotateAround(glm::vec3 vecPoint, glm::vec3 vecRotate) {
 /*
     Draws the model
 */
-void Model3D::draw(Shaders &shader) {
-    shader.use();
-    glBindTexture(GL_TEXTURE_2D, this->texture);
+void Model3D::draw(Shaders &CShaders) {
+    glBindVertexArray(this->VAO);
     glDrawArrays(GL_TRIANGLES, 0, this->fullVertexData.size() / 8);
 }
 
-std::string Model3D::getPath() {
-    return this->strPath;
-}
-
 std::vector<GLuint> Model3D::getMeshIndices() {
-    return this->mesh_indices;
+    return this->meshIndices;
 }
 
 GLuint Model3D::getTexture() {

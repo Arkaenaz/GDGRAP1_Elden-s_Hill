@@ -14,25 +14,21 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
-
 #include "../tiny_obj_loader.h"
 
 #include "../stb_image.h"
 
-
 #include "Shaders.hpp"
-
-void loadTexture(const std::string& strTexturePath);
 
 namespace models {
 	class Model3D {
 		private:
-			std::string strPath;
 			GLuint texture;
-			std::vector<GLuint> mesh_indices;
+			std::vector<GLuint> meshIndices;
 			std::vector<GLfloat> fullVertexData;
-			glm::vec3 vecColor = glm::vec3(0.f, 0.f, 0.f);
+			GLuint VAO, VBO;
 
+			glm::vec3 vecColor = glm::vec3(0.f, 0.f, 0.f);
 			glm::vec3 vecPosition;
 			glm::vec3 vecScale;
 			float fAngle;
@@ -44,27 +40,30 @@ namespace models {
 
 		public:
 			Model3D(std::string strObjectPath, std::string strTexturePath, glm::vec3 vecPosition, glm::vec3 vecScale);
+			void setupVAO();
 
 		private:
-			void loadModel(const std::string& strObjectPath);
+			void loadTexture(const char* strTexturePath);
+			void loadModel(const char* objectPath);
+
+		public:
+			void draw(Shaders& CShaders);
 
 		public:
 			void move(glm::vec3 vecMove);
 			void scale(glm::vec3 vecScale);
 			void rotate(glm::vec3 vecRotate);
 			void rotateAround(glm::vec3 vecPoint, glm::vec3 vecRotate);
-			void draw(Shaders &shader);
 
 		public:
-			glm::mat4 getTransformation();
-			std::string getPath();
 			std::vector<GLuint> getMeshIndices();
+			std::vector<GLfloat> getVertexData();
 			GLuint getTexture();
+			glm::mat4 getTransformation();
 			glm::vec3 getPosition();
 			void setPosition(glm::vec3 vecPosition);
 			glm::vec3 getScale();
 			void setScale(glm::vec3 vecScale);
-			std::vector<GLfloat> getVertexData();
 			glm::vec3 getColor();
 			void setColor(glm::vec3 vecColor);
 	};
