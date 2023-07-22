@@ -21,9 +21,6 @@
     <ClCompile Include="glad.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Model\Model3D.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Model\Shaders.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -48,15 +45,15 @@
     <ClCompile Include="Model\Light\PointLight.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Model\Model3D.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stb_image.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="tiny_obj_loader.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Model\Model3D.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Model\Camera.hpp">
@@ -84,6 +81,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Config\Settings.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Model\Model3D.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

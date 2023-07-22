@@ -5,7 +5,7 @@ using namespace models;
 Model3D::Model3D(std::string strObjectPath, std::string strTexturePath, glm::vec3 vecPosition, glm::vec3 vecScale) {
     this->loadTexture(strTexturePath.c_str());
     this->loadModel(strObjectPath.c_str());
-    //this->setupVAO();
+    this->setupVAO();
 
     this->vecPosition = vecPosition;
     this->vecScale = vecScale;
@@ -18,13 +18,20 @@ Model3D::Model3D(std::string strObjectPath, std::string strTexturePath, glm::vec
 void Model3D::loadTexture(const char* texturePath) {
     int img_width, img_height, colorChannels;
     stbi_set_flip_vertically_on_load(true);
-    unsigned char* tex_bytes = stbi_load(texturePath, &img_width, &img_height, &colorChannels, 4);
+    unsigned char* tex_bytes = stbi_load(texturePath, &img_width, &img_height, &colorChannels, 0);
 
     glGenTextures(1, &this->texture);
     glBindTexture(GL_TEXTURE_2D, this->texture);
     glActiveTexture(GL_TEXTURE0);
 
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, img_width, img_height, 0, GL_RGBA, GL_UNSIGNED_BYTE, tex_bytes);
+    GLenum color = GL_RGBA;
+    if (colorChannels == 1)
+        color = GL_RED;
+    else if (colorChannels == 3)
+        color = GL_RGB;
+    else if (colorChannels == 4)
+        color = GL_RGBA;
+    glTexImage2D(GL_TEXTURE_2D, 0, color, img_width, img_height, 0, color, GL_UNSIGNED_BYTE, tex_bytes);
 
     glGenerateMipmap(GL_TEXTURE_2D);
     stbi_image_free(tex_bytes);
@@ -57,11 +64,13 @@ void Model3D::loadModel(const char* objectPath) {
 }
 
 void Model3D::setupVAO() {
-    glGenVertexArrays(1, &this->VAO);
-    glGenBuffers(1, &this->VBO);
+    GLuint VBO;
 
-    glBindVertexArray(this->VAO);
-    glBindBuffer(GL_ARRAY_BUFFER, this->VBO);
+    glGenVertexArrays(1, &this->VAO);
+    glGenBuffers(1, &VBO);
+
+    glBindVertexArray(VAO);
+    glBindBuffer(GL_ARRAY_BUFFER, VBO);
     glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * this->fullVertexData.size(), this->fullVertexData.data(), GL_STATIC_DRAW);
 
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (void*)0);
@@ -137,6 +146,7 @@ void Model3D::rotateAround(glm::vec3 vecPoint, glm::vec3 vecRotate) {
     Draws the model
 */
 void Model3D::draw(Shaders &CShaders) {
+    glBindTexture(GL_TEXTURE_2D, this->texture);
     glBindVertexArray(this->VAO);
     glDrawArrays(GL_TRIANGLES, 0, this->fullVertexData.size() / 8);
 }

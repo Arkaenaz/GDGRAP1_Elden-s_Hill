@@ -32,6 +32,7 @@ using namespace models;
 using namespace cameras;
 using namespace lights;
 
+
 int main() {
     GLFWwindow* window;
 
@@ -60,9 +61,8 @@ int main() {
     double deltaTime;
 
     Shaders* pShaders = new Shaders("Shaders/sample.vert", "Shaders/sample.frag");
-    PerspectiveCamera* pPerspectiveCamera = new PerspectiveCamera(glm::vec3(0.f, 0.f, 0.f), glm::vec3(0.f, 3.0f, 0.f), glm::normalize(glm::vec3(0.f, 1.0f, 0.f)), 60.0f, 1000.0f);
-    Model3D* pModel = new Model3D("3D/octopus_toy.obj", "3D/octopus_toy_texture.png", glm::vec3(0.0f), glm::vec3(1.0f));
-    pModel->setupVAO();
+    PerspectiveCamera* pPerspectiveCamera = new PerspectiveCamera(glm::vec3(0.f, 30.f, 100.f), glm::vec3(0.f, 3.0f, 0.f), glm::normalize(glm::vec3(0.f, 1.0f, 0.f)), 60.0f, 1000.0f);
+    Model3D* pModel = new Model3D("3D/octopus_toy.obj", "3D/octopus_toy_texture.png", glm::vec3(0.0f, 0.f, 10.f), glm::vec3(1.0f));
 
     DirectionLight* pDirectionLight = new DirectionLight(glm::vec3(4, 11, -3), glm::vec3(1, 1, 1), 0.1f, glm::vec3(1, 1, 1), 0.5f, 16);
 
@@ -75,17 +75,6 @@ int main() {
         currentFrame = glfwGetTime();
         deltaTime = currentFrame - lastFrame;
         lastFrame = currentFrame;
-
-        /*glBegin(GL_POLYGON);
-        for (float i = 0; i < 5; i++) {
-            float angle1 = (0 + 72 * i) * 3.14 / 180;
-            float angle2 = (72 + 72 * i) * 3.14 / 180;
-            glVertex2f(0.3f * cos(angle1), 0.3f * sin(angle1));
-        }
-        glEnd();*/
-
-        pModel->move(glm::vec3(0.f));
-        pPerspectiveCamera->rotateAround(pModel->getPosition(), glm::vec3(0.f) * (float)deltaTime);
 
         pShaders->use();
 
@@ -106,6 +95,7 @@ int main() {
         pShaders->setFloatVec3("objColor", pModel->getColor());
 
         pModel->draw(*pShaders);
+
         /* Swap front and back buffers */
         glfwSwapBuffers(window);
 

@@ -20,13 +20,14 @@
 
 #include "Shaders.hpp"
 
+
 namespace models {
 	class Model3D {
 		private:
 			GLuint texture;
 			std::vector<GLuint> meshIndices;
 			std::vector<GLfloat> fullVertexData;
-			GLuint VAO, VBO;
+			GLuint VAO;
 
 			glm::vec3 vecColor = glm::vec3(0.f, 0.f, 0.f);
 			glm::vec3 vecPosition;
@@ -40,11 +41,11 @@ namespace models {
 
 		public:
 			Model3D(std::string strObjectPath, std::string strTexturePath, glm::vec3 vecPosition, glm::vec3 vecScale);
-			void setupVAO();
 
 		private:
-			void loadTexture(const char* strTexturePath);
+			void loadTexture(const char* texturePath);
 			void loadModel(const char* objectPath);
+			void setupVAO();
 
 		public:
 			void draw(Shaders& CShaders);

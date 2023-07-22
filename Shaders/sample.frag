@@ -37,7 +37,7 @@ void main() {
 	vec3 specColor = spec * specStr * lightColor;
 
 	vec3 result = specColor + diffuse + ambientCol;
-	result *= intensity;
+	//result *= intensity; im also a dumbass for not commenting this out
 
 	FragColor = vec4(result, 1.0) * texture(tex0, texCoord) + vec4(objColor, 1.0);
 }
