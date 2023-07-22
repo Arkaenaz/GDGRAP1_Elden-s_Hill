@@ -17,12 +17,11 @@
 
 #include "../tiny_obj_loader.h"
 
+
 #include "../stb_image.h"
 
 
 #include "Shaders.hpp"
-
-void loadTexture(const std::string& strTexturePath);
 
 namespace models {
 	class Model3D {
@@ -46,6 +45,7 @@ namespace models {
 			Model3D(std::string strObjectPath, std::string strTexturePath, glm::vec3 vecPosition, glm::vec3 vecScale);
 
 		private:
+			void loadTexture(const char* strTexturePath);
 			void loadModel(const std::string& strObjectPath);
 
 		public:

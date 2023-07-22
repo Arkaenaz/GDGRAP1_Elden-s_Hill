@@ -6,9 +6,9 @@ Model3D::Model3D(std::string strObjectPath, std::string strTexturePath, glm::vec
     //this->strPath = strPath;
     //this->mesh_indices = mesh_indices;
     //this->fullVertexData = fullVertexData;
-    this->texture = loadTexture(strTexturePath.c_str());
+    //this->texture = texture;
 
-    //this->loadTexture(strTexturePath.c_str());
+    this->loadTexture(strTexturePath.c_str());
     this->loadModel(strObjectPath);
 
     this->vecPosition = vecPosition;
@@ -19,15 +19,14 @@ Model3D::Model3D(std::string strObjectPath, std::string strTexturePath, glm::vec
     this->matScale = glm::mat4(1.0f);
 }
 
-GLuint loadTexture(const char* strTexturePath) {
+void Model3D::loadTexture(const char* strTexturePath) {
     int img_width, img_height, colorChannels;
     stbi_set_flip_vertically_on_load(true);
     unsigned char* tex_bytes = stbi_load(strTexturePath, &img_width, &img_height, &colorChannels, 4);
 
-    GLuint texture;
-    glGenTextures(1, &texture);
+    glGenTextures(1, &this->texture);
     
-    glBindTexture(GL_TEXTURE_2D, texture);
+    glBindTexture(GL_TEXTURE_2D, this->texture);
 
     // Depending on bool value, it would either choose RGB or RGBA
     //if (bAlpha)
@@ -37,8 +36,6 @@ GLuint loadTexture(const char* strTexturePath) {
 
     glGenerateMipmap(GL_TEXTURE_2D);
     stbi_image_free(tex_bytes);
-
-    return texture;
 }
 
 void Model3D::loadModel(const std::string& strObjectPath) {

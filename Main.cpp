@@ -2,20 +2,21 @@
 #include <string>
 #include <cmath>
 
+#include "Config/Settings.hpp"
+
 //#include <glm/glm.hpp>
 //#include <glm/gtc/matrix_transform.hpp>
 //#include <glm/gtc/type_ptr.hpp>
-//#include <glad/glad.h>
+
+#include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
 #define TINYOBJLOADER_IMPLEMENTATION
-//#include "tiny_obj_loader.h"
-
 #define STB_IMAGE_IMPLEMENTATION
-//#include "stb_image.h"
 
-const int SCREEN_HEIGHT = 600;
-const int SCREEN_WIDTH = 600;
+#include "Model/Model3D.hpp"
+
+using namespace models;
 
 int main() {
     GLFWwindow* window;
@@ -35,11 +36,23 @@ int main() {
     /* Make the window's context current */
     glfwMakeContextCurrent(window);
 
+    double currentFrame = glfwGetTime();
+    double lastFrame = currentFrame;
+    double deltaTime;
+
+    glActiveTexture(GL_TEXTURE0);
+
+    Model3D* pModel = new Model3D("3D/octopus_toy.obj", "3D/octopus_toy_texture.png", glm::vec3(0.0f), glm::vec3(1.0f));
+
     /* Loop until the user closes the window */
     while (!glfwWindowShouldClose(window))
     {
         /* Render here */
         glClear(GL_COLOR_BUFFER_BIT);
+
+        currentFrame = glfwGetTime();
+        deltaTime = currentFrame - lastFrame;
+        lastFrame = currentFrame;
 
         glBegin(GL_POLYGON);
         for (float i = 0; i < 5; i++) {

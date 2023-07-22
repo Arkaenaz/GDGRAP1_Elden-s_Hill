@@ -146,6 +146,7 @@
     <ClCompile Include="Model\Shaders.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Config\Settings.hpp" />
     <ClInclude Include="Model\Camera.hpp" />
     <ClInclude Include="Model\Camera\OrthoCamera.hpp" />
     <ClInclude Include="Model\Camera\PerspectiveCamera.hpp" />
