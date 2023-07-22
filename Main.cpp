@@ -53,6 +53,8 @@ int main() {
     gladLoadGL();
 
     glEnable(GL_DEPTH_TEST);
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
     glViewport(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
 
@@ -62,9 +64,11 @@ int main() {
 
     Shaders* pShaders = new Shaders("Shaders/sample.vert", "Shaders/sample.frag");
     PerspectiveCamera* pPerspectiveCamera = new PerspectiveCamera(glm::vec3(0.f, 30.f, 100.f), glm::vec3(0.f, 3.0f, 0.f), glm::normalize(glm::vec3(0.f, 1.0f, 0.f)), 60.0f, 1000.0f);
-    Model3D* pModel = new Model3D("3D/octopus_toy.obj", "3D/octopus_toy_texture.png", glm::vec3(0.0f, 0.f, 10.f), glm::vec3(1.0f));
+    Model3D* pModel = new Model3D("3D/octopus_toy.obj", glm::vec3(0.0f, 0.f, 10.f), glm::vec3(5.0f));
+    pModel->addTexture("3D/octopus_toy_texture.png");
 
     DirectionLight* pDirectionLight = new DirectionLight(glm::vec3(4, 11, -3), glm::vec3(1, 1, 1), 0.1f, glm::vec3(1, 1, 1), 0.5f, 16);
+
 
     /* Loop until the user closes the window */
     while (!glfwWindowShouldClose(window))
@@ -90,8 +94,15 @@ int main() {
         pShaders->setFloat("specPhong", pDirectionLight->getSpecPhong());
 
         pShaders->setFloatMat4("transform", pModel->getTransformation());
-        glBindTexture(GL_TEXTURE_2D, pModel->getTexture());
+
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, pModel->getTexture(0));
         pShaders->setInt("tex0", 0);
+
+        glActiveTexture(GL_TEXTURE1);
+        glBindTexture(GL_TEXTURE_2D, pModel->getTexture(1));
+        pShaders->setInt("norm_tex", 0);
+
         pShaders->setFloatVec3("objColor", pModel->getColor());
 
         pModel->draw(*pShaders);

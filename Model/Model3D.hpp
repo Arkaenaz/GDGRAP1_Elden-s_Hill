@@ -24,7 +24,7 @@
 namespace models {
 	class Model3D {
 		private:
-			GLuint texture;
+			std::vector<GLuint> textures;
 			std::vector<GLuint> meshIndices;
 			std::vector<GLfloat> fullVertexData;
 			GLuint VAO;
@@ -40,14 +40,14 @@ namespace models {
 			glm::mat4 matRotate;
 
 		public:
-			Model3D(std::string strObjectPath, std::string strTexturePath, glm::vec3 vecPosition, glm::vec3 vecScale);
+			Model3D(std::string strObjectPath, glm::vec3 vecPosition, glm::vec3 vecScale);
 
 		private:
-			void loadTexture(const char* texturePath);
 			void loadModel(const char* objectPath);
 			void setupVAO();
 
 		public:
+			void addTexture(const char* texturePath);
 			void draw(Shaders& CShaders);
 
 		public:
@@ -59,7 +59,7 @@ namespace models {
 		public:
 			std::vector<GLuint> getMeshIndices();
 			std::vector<GLfloat> getVertexData();
-			GLuint getTexture();
+			GLuint getTexture(int nIndex);
 			glm::mat4 getTransformation();
 			glm::vec3 getPosition();
 			void setPosition(glm::vec3 vecPosition);
