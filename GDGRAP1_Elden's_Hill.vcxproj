@@ -147,6 +147,7 @@
     <ClCompile Include="Model\Skybox.cpp" />
     <ClCompile Include="Model\Tank\TankBody.cpp" />
     <ClCompile Include="Model\Tank\TankTurret.cpp" />
+    <ClCompile Include="Model\TempModels\Octopus.cpp" />
     <ClCompile Include="Source.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -164,6 +165,7 @@
     <ClInclude Include="Model\Skybox.hpp" />
     <ClInclude Include="Model\Tank\TankBody.hpp" />
     <ClInclude Include="Model\Tank\TankTurret.hpp" />
+    <ClInclude Include="Model\TempModels\Octopus.hpp" />
     <ClInclude Include="stb_image.h" />
     <ClInclude Include="tiny_obj_loader.h" />
   </ItemGroup>

@@ -18,6 +18,7 @@
 
 #include "Model/Tank/TankBody.hpp"
 #include "Model/Tank/TankTurret.hpp"
+#include "Model/TempModels/Octopus.hpp"
 
 #include "Model/Skybox.hpp"
 
@@ -37,11 +38,54 @@ using namespace models;
 using namespace cameras;
 using namespace lights;
 
+float x_mod = 0;
+float y_mod = 0;
+float z_mod = 0;
+
 double xoldpos = 0.f;
 double yoldpos = 0.f;
 double currentmousexpos = 0.f;
 double currentmouseypos = 0.f;
 float sensitivity = 0.f;
+
+void Key_Callback(
+    GLFWwindow* window,
+    int key,
+    int scanCode,
+    int action, // pressed / released
+    int mod
+) {
+    if (action == GLFW_PRESS)
+        switch (key) {
+        case GLFW_KEY_W:
+            y_mod += BASE_SPEED;
+            break;
+        case GLFW_KEY_A:
+            x_mod -= BASE_SPEED;
+            break;
+        case GLFW_KEY_S:
+            y_mod -= BASE_SPEED;
+            break;
+        case GLFW_KEY_D:
+            x_mod += BASE_SPEED;
+            break;
+        }
+    if (action == GLFW_RELEASE)
+        switch (key) {
+        case GLFW_KEY_W:
+            y_mod = 0.f;
+            break;
+        case GLFW_KEY_A:
+            x_mod = 0.f;
+            break;
+        case GLFW_KEY_S:
+            y_mod = 0.f;
+            break;
+        case GLFW_KEY_D:
+            x_mod = 0.f;
+            break;
+        }
+}
 
 void mouse_pos_callback(GLFWwindow* window, double xpos, double ypos) {
     xoldpos = currentmousexpos;
@@ -102,6 +146,8 @@ int main() {
 
     DirectionLight* pDirectionLight = new DirectionLight(glm::vec3(4, 11, -3), glm::vec3(1, 1, 1), 1.f, glm::vec3(1, 1, 1), 0.5f, 16);
 
+    Octopus* pOctopus = new Octopus("3D/octopus_toy.obj", glm::vec3(0.0f, -300.f, 0.f), glm::vec3(100.f));
+    pOctopus->addTexture("3D/octopus_toy_texture.png");
 
     /* Loop until the user closes the window */
     while (!glfwWindowShouldClose(window))
@@ -120,7 +166,12 @@ int main() {
         float cam_x_mod = -(currentmouseypos - yoldpos) * sensitivity;
         float cam_z_mod = 0.f;
 
-        pPerspectiveCamera->rotateAround(pTankBody->getPosition(), glm::vec3(cam_x_mod, cam_y_mod, cam_z_mod) * (float)deltaTime);
+        // temp stuff
+        pPerspectiveCamera->rotateAround(pTankBody->getPosition(), glm::vec3(cam_x_mod, cam_y_mod, 0.f) * (float)deltaTime);
+        pTankTurret->rotate(glm::vec3(0.f, cam_y_mod, 0.f) * (float)deltaTime);
+
+        glm::vec3 vecMove = glm::vec3(x_mod, y_mod, z_mod);
+        pTankBody->move(vecMove);
 
         sensitivity = 0.f;
 
@@ -152,6 +203,7 @@ int main() {
 
         pTankBody->draw(CShaders);
         pTankTurret->draw(CShaders);
+        pOctopus->draw(CShaders);
 
         /* Swap front and back buffers */
         glfwSwapBuffers(window);
