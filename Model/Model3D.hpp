@@ -1,6 +1,7 @@
 #ifndef MODELS_MODEL3D_HPP
 #define MODELS_MODEL3D_HPP
 
+#include <iostream>
 #include <cmath>
 #include <string>
 #include <vector>
@@ -20,10 +21,14 @@
 
 #include "Shaders.hpp"
 
+#include "Drawable.hpp"
+
 
 namespace models {
-	class Model3D {
+	class Model3D : public Drawable {
 		protected:
+			int nVertexValues;
+
 			std::vector<GLuint> textures;
 			std::vector<GLuint> meshIndices;
 			std::vector<GLfloat> fullVertexData;
@@ -36,13 +41,15 @@ namespace models {
 			glm::mat4 modelMatrix;
 
 		public:
-			Model3D(std::string strObjectPath, glm::vec3 vecPosition, glm::vec3 vecScale);
+			Model3D(glm::vec3 vecPosition = glm::vec3(0.f), glm::vec3 vecScale = glm::vec3(1.f));
 
 		protected:
 			virtual void loadModel(const char* objectPath) = 0;
 			virtual void setupVAO();
+			virtual void setShaderValues(Shaders& CShaders);
 
 		public:
+			//virtual void initialize() = 0;
 			void addTexture(const char* texturePath);
 			virtual void draw(Shaders& CShaders);
 

@@ -11,9 +11,10 @@ namespace models {
 		public:
 			TankTurret(std::string strObjectPath, glm::vec3 vecPosition, glm::vec3 vecScale);
 
-		public:
+		private:
 			void loadModel(const char *objectPath);
-			void draw(Shaders& CShaders);
+			void setupVAO();
+			void setShaderValues(Shaders& CShaders);
 	};
 }
 #endif 

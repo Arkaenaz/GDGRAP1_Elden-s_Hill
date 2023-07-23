@@ -144,6 +144,7 @@
     <ClCompile Include="Model\Model3D.cpp" />
     <ClCompile Include="Model\Object\Player.cpp" />
     <ClCompile Include="Model\Shaders.cpp" />
+    <ClCompile Include="Model\Skybox.cpp" />
     <ClCompile Include="Model\Tank\TankBody.cpp" />
     <ClCompile Include="Model\Tank\TankTurret.cpp" />
     <ClCompile Include="Source.cpp" />
@@ -157,8 +158,10 @@
     <ClInclude Include="Model\Light\DirectionLight.hpp" />
     <ClInclude Include="Model\Light\PointLight.hpp" />
     <ClInclude Include="Model\Model3D.hpp" />
+    <ClInclude Include="Model\Drawable.hpp" />
     <ClInclude Include="Model\Object\Player.hpp" />
     <ClInclude Include="Model\Shaders.hpp" />
+    <ClInclude Include="Model\Skybox.hpp" />
     <ClInclude Include="Model\Tank\TankBody.hpp" />
     <ClInclude Include="Model\Tank\TankTurret.hpp" />
     <ClInclude Include="stb_image.h" />

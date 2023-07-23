@@ -2,7 +2,7 @@
 
 using namespace models;
 
-TankTurret::TankTurret(std::string strObjectPath, glm::vec3 vecPosition, glm::vec3 vecScale) : Model3D(strObjectPath, vecPosition, vecScale) {
+TankTurret::TankTurret(std::string strObjectPath, glm::vec3 vecPosition, glm::vec3 vecScale) : Model3D(vecPosition, vecScale) {
     this->loadModel(strObjectPath.c_str());
     this->setupVAO();
 }
@@ -113,15 +113,43 @@ void TankTurret::loadModel(const char *objectPath) {
 
         }
     }
+    this->nVertexValues = 11;
 }
 
-void TankTurret::draw(Shaders& CShaders) {
+void TankTurret::setupVAO() {
+    GLuint VBO;
+
+    glGenVertexArrays(1, &this->VAO);
+    glGenBuffers(1, &VBO);
+
+    glBindVertexArray(VAO);
+    glBindBuffer(GL_ARRAY_BUFFER, VBO);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * this->fullVertexData.size(), this->fullVertexData.data(), GL_STATIC_DRAW);
+
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, this->nVertexValues * sizeof(GLfloat), (void*)0);
+
+    GLintptr uvPtr = 3 * sizeof(float);
+    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, this->nVertexValues * sizeof(float), (void*)uvPtr);
+
+    GLintptr tangentPtr = 5 * sizeof(float);
+    glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, this->nVertexValues * sizeof(float), (void*)tangentPtr);
+
+    GLintptr bitangentPtr = 8 * sizeof(float);
+    glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, this->nVertexValues * sizeof(float), (void*)bitangentPtr);
+
+    glEnableVertexAttribArray(0);
+    glEnableVertexAttribArray(2);
+    glEnableVertexAttribArray(3);
+    glEnableVertexAttribArray(4);
+
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glBindVertexArray(0);
+}
+
+void TankTurret::setShaderValues(Shaders& CShaders) {
     CShaders.setFloatMat4("transform", this->getTransformation());
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, this->getTexture(0));
     CShaders.setInt("tex0", 0);
     CShaders.setFloatVec3("objColor", this->getColor());
-
-    glBindVertexArray(this->VAO);
-    glDrawArrays(GL_TRIANGLES, 0, this->fullVertexData.size() / 11);
 }
