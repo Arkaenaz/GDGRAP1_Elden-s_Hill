@@ -85,12 +85,12 @@ int main() {
     Shaders CShaders = Shaders("Shaders/sample.vert", "Shaders/sample.frag");
     Shaders CSkyboxShaders = Shaders("Shaders/skybox.vert", "Shaders/skybox.frag");
 
-    Skybox* pSkybox = new Skybox("Skybox/rainbow_rt.png",
-                                 "Skybox/rainbow_lf.png",
-                                 "Skybox/rainbow_up.png",
-                                 "Skybox/rainbow_dn.png",
-                                 "Skybox/rainbow_ft.png",
-                                 "Skybox/rainbow_bk.png");
+    Skybox* pSkybox = new Skybox("Skybox/px.png",
+                                 "Skybox/nx.png",
+                                 "Skybox/py.png",
+                                 "Skybox/ny.png",
+                                 "Skybox/pz.png",
+                                 "Skybox/nz.png");
 
     PerspectiveCamera* pPerspectiveCamera = new PerspectiveCamera(glm::vec3(400.f, 400.f, 500.f), glm::vec3(0.f, 3.0f, 0.f), glm::normalize(glm::vec3(0.f, 1.0f, 0.f)), 60.0f, 1000.0f);
     TankBody *pTankBody = new TankBody("3D/T-34/T-34/T-34.obj", glm::vec3(0.0f, 0.f, 0.f), glm::vec3(.5f));
