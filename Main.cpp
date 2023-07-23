@@ -37,6 +37,19 @@ using namespace models;
 using namespace cameras;
 using namespace lights;
 
+double xoldpos = 0.f;
+double yoldpos = 0.f;
+double currentmousexpos = 0.f;
+double currentmouseypos = 0.f;
+float sensitivity = 0.f;
+
+void mouse_pos_callback(GLFWwindow* window, double xpos, double ypos) {
+    xoldpos = currentmousexpos;
+    yoldpos = currentmouseypos;
+    currentmousexpos = xpos;
+    currentmouseypos = ypos;
+    sensitivity = 150.0f;
+}
 
 int main() {
     GLFWwindow* window;
@@ -56,6 +69,8 @@ int main() {
     /* Make the window's context current */
     glfwMakeContextCurrent(window);
     gladLoadGL();
+
+    glfwSetCursorPosCallback(window, mouse_pos_callback);
 
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_BLEND);
@@ -100,6 +115,14 @@ int main() {
 
         glDepthMask(GL_FALSE);
         glDepthFunc(GL_LEQUAL);
+
+        float cam_y_mod = -(currentmousexpos - xoldpos) * sensitivity;
+        float cam_x_mod = -(currentmouseypos - yoldpos) * sensitivity;
+        float cam_z_mod = 0.f;
+
+        pPerspectiveCamera->rotateAround(pTankBody->getPosition(), glm::vec3(cam_x_mod, cam_y_mod, cam_z_mod) * (float)deltaTime);
+
+        sensitivity = 0.f;
 
         CSkyboxShaders.use();
 
