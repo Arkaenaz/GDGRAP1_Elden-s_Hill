@@ -114,3 +114,14 @@ void TankTurret::loadModel(const char *objectPath) {
         }
     }
 }
+
+void TankTurret::draw(Shaders& CShaders) {
+    CShaders.setFloatMat4("transform", this->getTransformation());
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, this->getTexture(0));
+    CShaders.setInt("tex0", 0);
+    CShaders.setFloatVec3("objColor", this->getColor());
+
+    glBindVertexArray(this->VAO);
+    glDrawArrays(GL_TRIANGLES, 0, this->fullVertexData.size() / 11);
+}

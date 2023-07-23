@@ -29,27 +29,22 @@ namespace models {
 			std::vector<GLfloat> fullVertexData;
 			GLuint VAO;
 
-			glm::vec3 vecColor = glm::vec3(0.f, 0.f, 0.f);
+			glm::vec3 vecColor;
 			glm::vec3 vecPosition;
 			glm::vec3 vecScale;
-			float fAngle;
-			glm::vec3 vecAxis;
 
-			glm::mat4 matTranslate;
-			glm::mat4 matScale;
-			glm::mat4 matRotate;
+			glm::mat4 modelMatrix;
 
 		public:
 			Model3D(std::string strObjectPath, glm::vec3 vecPosition, glm::vec3 vecScale);
 
 		protected:
-			void loadTexture(const char* texturePath);
 			virtual void loadModel(const char* objectPath) = 0;
-			void setupVAO();
+			virtual void setupVAO();
 
 		public:
 			void addTexture(const char* texturePath);
-			void draw(Shaders *CShaders);
+			virtual void draw(Shaders& CShaders);
 
 		public:
 			void move(glm::vec3 vecMove);

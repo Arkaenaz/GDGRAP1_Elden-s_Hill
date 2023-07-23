@@ -9,9 +9,11 @@ namespace models {
 
 
 		public:
-		TankBody(std::string strObjectPath, glm::vec3 vecPosition, glm::vec3 vecScale);
+			TankBody(std::string strObjectPath, glm::vec3 vecPosition, glm::vec3 vecScale);
 
-		void loadModel(const char *objectPath);
+		public:
+			void loadModel(const char *objectPath);
+			void draw(Shaders& CShaders);
 	};
 }
 #endif 
