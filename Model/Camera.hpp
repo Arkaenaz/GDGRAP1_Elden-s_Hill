@@ -25,9 +25,11 @@ namespace models {
 		public:
 			void move(glm::vec3 vecMove);
 			void rotateAround(glm::vec3 vecPoint, glm::vec3 vecRotate);
+			glm::vec3 checkRotateAround(glm::vec3 vecPoint, glm::vec3 vecRotate);
 
 		public:
 			glm::vec3 getPosition();
+			void setPosition(glm::vec3 vecPos);
 			glm::mat4 getViewMatrix();
 			virtual glm::mat4 getProjection();
 	};

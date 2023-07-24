@@ -36,15 +36,40 @@ void Camera::move(glm::vec3 vecMove) {
 	@param vecRotate rotation angles
 */
 void Camera::rotateAround(glm::vec3 vecPoint, glm::vec3 vecRotate) {
-	glm::quat quatRotate = glm::quat(cos(glm::radians(vecRotate.z) / 2), glm::vec3(0.f, 0.f, (sin(glm::radians(vecRotate.z) / 2))));
+	/*glm::quat quatRotate = glm::quat(cos(glm::radians(vecRotate.z) / 2), glm::vec3(0.f, 0.f, (sin(glm::radians(vecRotate.z) / 2))));
 	quatRotate *= glm::quat(cos(glm::radians(vecRotate.y) / 2), glm::vec3(0.f, (sin(glm::radians(vecRotate.y) / 2)), 0.f));
 	quatRotate *= glm::quat(cos(glm::radians(vecRotate.x) / 2), glm::vec3((sin(glm::radians(vecRotate.x) / 2)), 0.f, 0.f));
-	this->vecPosition = quatRotate * (this->vecPosition - vecPoint) + vecPoint;
+	this->vecPosition = quatRotate * (this->vecPosition - vecPoint) + vecPoint;*/
+
+	glm::mat4 transformation_matrix = glm::rotate(glm::mat4(1.f), glm::radians(vecRotate.y), glm::normalize(glm::vec3(0, 1, 0)));
+	transformation_matrix = glm::rotate(transformation_matrix, glm::radians(vecRotate.x), glm::normalize(glm::vec3(-this->vecPosition.z / 15, 0, this->vecPosition.x / 15)));
+	glm::vec4 posVec = transformation_matrix * glm::vec4(this->vecPosition.x, this->vecPosition.y, this->vecPosition.z, 1);
+
+	this->vecPosition.x = posVec.x;
+	this->vecPosition.y = posVec.y;
+	this->vecPosition.z = posVec.z;
+
 	this->updateVectors();
+}
+
+glm::vec3 Camera::checkRotateAround(glm::vec3 vecPoint, glm::vec3 vecRotate) {
+	glm::vec3 result;
+	glm::mat4 transformation_matrix = glm::rotate(glm::mat4(1.f), glm::radians(vecRotate.y), glm::normalize(glm::vec3(0, 1, 0)));
+	transformation_matrix = glm::rotate(transformation_matrix, glm::radians(vecRotate.x), glm::normalize(glm::vec3(-this->vecPosition.z / 15, 0, this->vecPosition.x / 15)));
+	glm::vec4 posVec = transformation_matrix * glm::vec4(this->vecPosition.x, this->vecPosition.y, this->vecPosition.z, 1);
+
+	result.x = posVec.x;
+	result.y = posVec.y;
+	result.z = posVec.z;
+	return result;
 }
 
 glm::vec3 Camera::getPosition() {
 	return this->vecPosition;
+}
+
+void Camera::setPosition(glm::vec3 vecPos) {
+	this->vecPosition = vecPos;
 }
 
 glm::mat4 Camera::getViewMatrix() {

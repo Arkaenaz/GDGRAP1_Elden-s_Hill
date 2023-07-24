@@ -18,6 +18,7 @@
 
 #include "Model/Tank/TankBody.hpp"
 #include "Model/Tank/TankTurret.hpp"
+#include "Model/Tank/TankTracks.hpp"
 #include "Model/TempModels/Octopus.hpp"
 
 #include "Model/Skybox.hpp"
@@ -115,6 +116,7 @@ int main() {
     gladLoadGL();
 
     glfwSetCursorPosCallback(window, mouse_pos_callback);
+    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_BLEND);
@@ -136,18 +138,29 @@ int main() {
                                  "Skybox/pz.png",
                                  "Skybox/nz.png");
 
-    PerspectiveCamera* pPerspectiveCamera = new PerspectiveCamera(glm::vec3(400.f, 400.f, 500.f), glm::vec3(0.f, 3.0f, 0.f), glm::normalize(glm::vec3(0.f, 1.0f, 0.f)), 60.0f, 1000.0f);
+    PerspectiveCamera* pPerspectiveCamera = new PerspectiveCamera(glm::vec3(0.f,  105.f, -500.f), glm::vec3(0.f, 3.0f, 0.f), glm::normalize(glm::vec3(0.f, 1.0f, 0.f)), 60.0f, 1000.0f);
     TankBody *pTankBody = new TankBody("3D/T-34/T-34/T-34.obj", glm::vec3(0.0f, 0.f, 0.f), glm::vec3(.5f));
     TankTurret *pTankTurret = new TankTurret("3D/T-34/T-34/T-34.obj", glm::vec3(0.0f, 0.f, 0.f), glm::vec3(.5f));
-    pTankBody->addTexture("3D/T-34/T-34/tex/T- 34_Body.jpg");
+    TankTracks *pTankTracks = new TankTracks("3D/T-34/T-34/T-34.obj", glm::vec3(0.0f, 0.f, 0.f), glm::vec3(.5f));
+    pTankBody->addTexture("3D/T-34/T-34/tex/T-34_Body.jpg");
+    pTankBody->addTexture("3D/T-34/T-34/tex/T-34_Body_norm.jpg");
     pTankTurret->addTexture("3D/T-34/T-34/tex/T-34_Body.jpg");
+    pTankTurret->addTexture("3D/T-34/T-34/tex/T-34_Body_norm.jpg");
+    pTankTracks->addTexture("3D/T-34/T-34/tex/T-34_Tracks.jpg");
+    pTankTracks->addTexture("3D/T-34/T-34/tex/T-34_Tracks_norm.jpg");
 
-    pTankTurret->rotate(glm::vec3(0,90,0));
 
     DirectionLight* pDirectionLight = new DirectionLight(glm::vec3(4, 11, -3), glm::vec3(1, 1, 1), 1.f, glm::vec3(1, 1, 1), 0.5f, 16);
 
     Octopus* pOctopus = new Octopus("3D/octopus_toy.obj", glm::vec3(0.0f, -300.f, 0.f), glm::vec3(100.f));
     pOctopus->addTexture("3D/octopus_toy_texture.png");
+
+
+
+
+    /*float cam_y_mod;
+    float cam_x_mod;
+    float cam_z_mod = 0.f;*/
 
     /* Loop until the user closes the window */
     while (!glfwWindowShouldClose(window))
@@ -162,13 +175,22 @@ int main() {
         glDepthMask(GL_FALSE);
         glDepthFunc(GL_LEQUAL);
 
+        
+        
         float cam_y_mod = -(currentmousexpos - xoldpos) * sensitivity;
         float cam_x_mod = -(currentmouseypos - yoldpos) * sensitivity;
         float cam_z_mod = 0.f;
 
         // temp stuff
-        pPerspectiveCamera->rotateAround(pTankBody->getPosition(), glm::vec3(cam_x_mod, cam_y_mod, 0.f) * (float)deltaTime);
-        pTankTurret->rotate(glm::vec3(0.f, cam_y_mod, 0.f) * (float)deltaTime);
+        if(pPerspectiveCamera->checkRotateAround(pTankBody->getPosition(), glm::vec3(cam_x_mod, cam_y_mod, 0.f) * (float)deltaTime).y <= 400 &&
+           pPerspectiveCamera->checkRotateAround(pTankBody->getPosition(), glm::vec3(cam_x_mod, cam_y_mod, 0.f) * (float)deltaTime).y >= 100) {
+            pPerspectiveCamera->rotateAround(pTankBody->getPosition(), glm::vec3(cam_x_mod, cam_y_mod, 0.f) * (float)deltaTime);
+            pTankTurret->rotate(glm::vec3(0.f, cam_y_mod, 0.f) * (float)deltaTime);
+        }
+
+        
+        
+        
 
         glm::vec3 vecMove = glm::vec3(x_mod, y_mod, z_mod);
         pTankBody->move(vecMove);
@@ -203,6 +225,7 @@ int main() {
 
         pTankBody->draw(CShaders);
         pTankTurret->draw(CShaders);
+        pTankTracks->draw(CShaders);
         pOctopus->draw(CShaders);
 
         /* Swap front and back buffers */
