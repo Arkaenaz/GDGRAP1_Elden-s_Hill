@@ -70,6 +70,12 @@ glm::vec3 Camera::getPosition() {
 
 void Camera::setPosition(glm::vec3 vecPos) {
 	this->vecPosition = vecPos;
+	this->updateVectors();
+}
+
+void Camera::setCenter(glm::vec3 vecCenter) {
+	this->vecCenter = vecCenter;
+	this->updateVectors();
 }
 
 glm::mat4 Camera::getViewMatrix() {

@@ -59,13 +59,13 @@ void Key_Callback(
     if (action == GLFW_PRESS)
         switch (key) {
         case GLFW_KEY_W:
-            y_mod += BASE_SPEED;
+            z_mod += BASE_SPEED;
             break;
         case GLFW_KEY_A:
             x_mod -= BASE_SPEED;
             break;
         case GLFW_KEY_S:
-            y_mod -= BASE_SPEED;
+            z_mod -= BASE_SPEED;
             break;
         case GLFW_KEY_D:
             x_mod += BASE_SPEED;
@@ -74,13 +74,13 @@ void Key_Callback(
     if (action == GLFW_RELEASE)
         switch (key) {
         case GLFW_KEY_W:
-            y_mod = 0.f;
+            z_mod = 0.f;
             break;
         case GLFW_KEY_A:
             x_mod = 0.f;
             break;
         case GLFW_KEY_S:
-            y_mod = 0.f;
+            z_mod = 0.f;
             break;
         case GLFW_KEY_D:
             x_mod = 0.f;
@@ -115,6 +115,7 @@ int main() {
     glfwMakeContextCurrent(window);
     gladLoadGL();
 
+    glfwSetKeyCallback(window, Key_Callback);
     glfwSetCursorPosCallback(window, mouse_pos_callback);
     glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
@@ -148,7 +149,7 @@ int main() {
     pTankTurret->addTexture("3D/T-34/T-34/tex/T-34_Body_norm.jpg");
     pTankTracks->addTexture("3D/T-34/T-34/tex/T-34_Tracks.jpg");
     pTankTracks->addTexture("3D/T-34/T-34/tex/T-34_Tracks_norm.jpg");
-
+    
 
     DirectionLight* pDirectionLight = new DirectionLight(glm::vec3(4, 11, -3), glm::vec3(1, 1, 1), 1.f, glm::vec3(1, 1, 1), 0.5f, 16);
 
@@ -182,9 +183,9 @@ int main() {
         float cam_z_mod = 0.f;
 
         // temp stuff
-        if(pPerspectiveCamera->checkRotateAround(pTankBody->getPosition(), glm::vec3(cam_x_mod, cam_y_mod, 0.f) * (float)deltaTime).y <= 400 &&
-           pPerspectiveCamera->checkRotateAround(pTankBody->getPosition(), glm::vec3(cam_x_mod, cam_y_mod, 0.f) * (float)deltaTime).y >= 100) {
-            pPerspectiveCamera->rotateAround(pTankBody->getPosition(), glm::vec3(cam_x_mod, cam_y_mod, 0.f) * (float)deltaTime);
+        if(pPerspectiveCamera->checkRotateAround(pTankTurret->getPosition(), glm::vec3(cam_x_mod, cam_y_mod, 0.f) * (float)deltaTime).y <= 400 &&
+           pPerspectiveCamera->checkRotateAround(pTankTurret->getPosition(), glm::vec3(cam_x_mod, cam_y_mod, 0.f) * (float)deltaTime).y >= 100) {
+            pPerspectiveCamera->rotateAround(pTankTurret->getPosition(), glm::vec3(cam_x_mod, cam_y_mod, 0.f) * (float)deltaTime);
             pTankTurret->rotate(glm::vec3(0.f, cam_y_mod, 0.f) * (float)deltaTime);
         }
 
@@ -193,7 +194,8 @@ int main() {
         
 
         glm::vec3 vecMove = glm::vec3(x_mod, y_mod, z_mod);
-        pTankBody->move(vecMove);
+        pPerspectiveCamera->setCenter(pTankTurret->getPosition());
+        pTankTurret->move(vecMove);
 
         sensitivity = 0.f;
 
