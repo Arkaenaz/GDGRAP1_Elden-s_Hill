@@ -68,7 +68,7 @@ int main() {
     PerspectiveCamera* pPerspectiveCamera = new PerspectiveCamera(glm::vec3(400.f, 400.f, 500.f), glm::vec3(0.f, 3.0f, 0.f), glm::normalize(glm::vec3(0.f, 1.0f, 0.f)), 60.0f, 1000.0f);
     TankBody *pTankBody = new TankBody("3D/T-34/T-34/T-34.obj", glm::vec3(0.0f, 0.f, 0.f), glm::vec3(.5f));
     TankTurret *pTankTurret = new TankTurret("3D/T-34/T-34/T-34.obj", glm::vec3(0.0f, 0.f, 0.f), glm::vec3(.5f));
-    pTankBody->addTexture("3D/T-34/T-34/tex/T-34_Body.jpg");
+    pTankBody->addTexture("3D/T-34/T-34/tex/T- 34_Body.jpg");
     pTankTurret->addTexture("3D/T-34/T-34/tex/T-34_Body.jpg");
 
     pTankTurret->rotate(glm::vec3(0,90,0));
