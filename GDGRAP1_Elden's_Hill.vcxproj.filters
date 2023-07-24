@@ -57,6 +57,12 @@
     <ClCompile Include="Model\Tank\TankTurret.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Model\Skybox.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Model\TempModels\Octopus.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stb_image.h">
@@ -101,9 +107,20 @@
     <ClInclude Include="Model\Tank\TankTurret.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Model\Skybox.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Model\Drawable.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Model\TempModels\Octopus.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <CopyFileToFolders Include="Shaders\sample.frag" />
     <CopyFileToFolders Include="Shaders\sample.vert" />
+    <CopyFileToFolders Include="Shaders\skybox.frag" />
+    <CopyFileToFolders Include="Shaders\skybox.vert" />
   </ItemGroup>
 </Project>

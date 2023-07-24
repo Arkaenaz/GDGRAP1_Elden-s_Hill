@@ -144,8 +144,10 @@
     <ClCompile Include="Model\Model3D.cpp" />
     <ClCompile Include="Model\Object\Player.cpp" />
     <ClCompile Include="Model\Shaders.cpp" />
+    <ClCompile Include="Model\Skybox.cpp" />
     <ClCompile Include="Model\Tank\TankBody.cpp" />
     <ClCompile Include="Model\Tank\TankTurret.cpp" />
+    <ClCompile Include="Model\TempModels\Octopus.cpp" />
     <ClCompile Include="Source.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -157,10 +159,13 @@
     <ClInclude Include="Model\Light\DirectionLight.hpp" />
     <ClInclude Include="Model\Light\PointLight.hpp" />
     <ClInclude Include="Model\Model3D.hpp" />
+    <ClInclude Include="Model\Drawable.hpp" />
     <ClInclude Include="Model\Object\Player.hpp" />
     <ClInclude Include="Model\Shaders.hpp" />
+    <ClInclude Include="Model\Skybox.hpp" />
     <ClInclude Include="Model\Tank\TankBody.hpp" />
     <ClInclude Include="Model\Tank\TankTurret.hpp" />
+    <ClInclude Include="Model\TempModels\Octopus.hpp" />
     <ClInclude Include="stb_image.h" />
     <ClInclude Include="tiny_obj_loader.h" />
   </ItemGroup>
@@ -173,6 +178,22 @@
       <DestinationFolders Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(OutDir)Shaders</DestinationFolders>
     </CopyFileToFolders>
     <CopyFileToFolders Include="Shaders\sample.vert">
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</DeploymentContent>
+      <FileType>Document</FileType>
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</DeploymentContent>
+      <DestinationFolders Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(OutDir)Shaders</DestinationFolders>
+      <DestinationFolders Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(OutDir)Shaders</DestinationFolders>
+    </CopyFileToFolders>
+  </ItemGroup>
+  <ItemGroup>
+    <CopyFileToFolders Include="Shaders\skybox.frag">
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</DeploymentContent>
+      <FileType>Document</FileType>
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</DeploymentContent>
+      <DestinationFolders Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(OutDir)Shaders</DestinationFolders>
+      <DestinationFolders Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(OutDir)Shaders</DestinationFolders>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="Shaders\skybox.vert">
       <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</DeploymentContent>
       <FileType>Document</FileType>
       <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</DeploymentContent>

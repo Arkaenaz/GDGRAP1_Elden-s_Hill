@@ -16,6 +16,12 @@
 
 #include "Model/Model3D.hpp"
 
+#include "Model/Tank/TankBody.hpp"
+#include "Model/Tank/TankTurret.hpp"
+#include "Model/TempModels/Octopus.hpp"
+
+#include "Model/Skybox.hpp"
+
 #include "Model/Camera.hpp"
 
 #include "Model/Camera/OrthoCamera.hpp"
@@ -27,13 +33,67 @@
 #include "Model/Light/PointLight.hpp"
 
 #include "Model/Shaders.hpp"
-#include "Model/Tank/TankBody.hpp"
-#include "Model/Tank/TankTurret.hpp"
 
 using namespace models;
 using namespace cameras;
 using namespace lights;
 
+float x_mod = 0;
+float y_mod = 0;
+float z_mod = 0;
+
+double xoldpos = 0.f;
+double yoldpos = 0.f;
+double currentmousexpos = 0.f;
+double currentmouseypos = 0.f;
+float sensitivity = 0.f;
+
+void Key_Callback(
+    GLFWwindow* window,
+    int key,
+    int scanCode,
+    int action, // pressed / released
+    int mod
+) {
+    if (action == GLFW_PRESS)
+        switch (key) {
+        case GLFW_KEY_W:
+            y_mod += BASE_SPEED;
+            break;
+        case GLFW_KEY_A:
+            x_mod -= BASE_SPEED;
+            break;
+        case GLFW_KEY_S:
+            y_mod -= BASE_SPEED;
+            break;
+        case GLFW_KEY_D:
+            x_mod += BASE_SPEED;
+            break;
+        }
+    if (action == GLFW_RELEASE)
+        switch (key) {
+        case GLFW_KEY_W:
+            y_mod = 0.f;
+            break;
+        case GLFW_KEY_A:
+            x_mod = 0.f;
+            break;
+        case GLFW_KEY_S:
+            y_mod = 0.f;
+            break;
+        case GLFW_KEY_D:
+            x_mod = 0.f;
+            break;
+        }
+}
+
+void mouse_pos_callback(GLFWwindow* window, double xpos, double ypos) {
+    xoldpos = currentmousexpos;
+    yoldpos = currentmouseypos;
+    currentmousexpos = xpos;
+    currentmouseypos = ypos;
+    sensitivity = 150.0f;
+}
 
 int main() {
     GLFWwindow* window;
@@ -54,6 +114,8 @@ int main() {
     glfwMakeContextCurrent(window);
     gladLoadGL();
 
+    glfwSetCursorPosCallback(window, mouse_pos_callback);
+
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -64,7 +126,16 @@ int main() {
     double lastFrame = currentFrame;
     double deltaTime;
 
-    Shaders* pShaders = new Shaders("Shaders/sample.vert", "Shaders/sample.frag");
+    Shaders CShaders = Shaders("Shaders/sample.vert", "Shaders/sample.frag");
+    Shaders CSkyboxShaders = Shaders("Shaders/skybox.vert", "Shaders/skybox.frag");
+
+    Skybox* pSkybox = new Skybox("Skybox/px.png",
+                                 "Skybox/nx.png",
+                                 "Skybox/py.png",
+                                 "Skybox/ny.png",
+                                 "Skybox/pz.png",
+                                 "Skybox/nz.png");
+
     PerspectiveCamera* pPerspectiveCamera = new PerspectiveCamera(glm::vec3(400.f, 400.f, 500.f), glm::vec3(0.f, 3.0f, 0.f), glm::normalize(glm::vec3(0.f, 1.0f, 0.f)), 60.0f, 1000.0f);
     TankBody *pTankBody = new TankBody("3D/T-34/T-34/T-34.obj", glm::vec3(0.0f, 0.f, 0.f), glm::vec3(.5f));
     TankTurret *pTankTurret = new TankTurret("3D/T-34/T-34/T-34.obj", glm::vec3(0.0f, 0.f, 0.f), glm::vec3(.5f));
@@ -75,6 +146,8 @@ int main() {
 
     DirectionLight* pDirectionLight = new DirectionLight(glm::vec3(4, 11, -3), glm::vec3(1, 1, 1), 1.f, glm::vec3(1, 1, 1), 0.5f, 16);
 
+    Octopus* pOctopus = new Octopus("3D/octopus_toy.obj", glm::vec3(0.0f, -300.f, 0.f), glm::vec3(100.f));
+    pOctopus->addTexture("3D/octopus_toy_texture.png");
 
     /* Loop until the user closes the window */
     while (!glfwWindowShouldClose(window))
@@ -86,24 +159,51 @@ int main() {
         deltaTime = currentFrame - lastFrame;
         lastFrame = currentFrame;
 
-        pShaders->use();
+        glDepthMask(GL_FALSE);
+        glDepthFunc(GL_LEQUAL);
 
-        pShaders->setFloatVec3("cameraPos", pPerspectiveCamera->getPosition());
-        pShaders->setFloatMat4("view", pPerspectiveCamera->getViewMatrix());
-        pShaders->setFloatMat4("projection", pPerspectiveCamera->getProjection());
+        float cam_y_mod = -(currentmousexpos - xoldpos) * sensitivity;
+        float cam_x_mod = -(currentmouseypos - yoldpos) * sensitivity;
+        float cam_z_mod = 0.f;
 
-        pShaders->setFloatVec3("lightPos", pDirectionLight->getPosition());
-        pShaders->setFloatVec3("lightColor", pDirectionLight->getColor());
-        pShaders->setFloat("ambientStr", pDirectionLight->getAmbientStrength());
-        pShaders->setFloatVec3("ambientColor", pDirectionLight->getAmbientColor());
-        pShaders->setFloat("specStr", pDirectionLight->getSpecStrength());
-        pShaders->setFloat("specPhong", pDirectionLight->getSpecPhong());
+        // temp stuff
+        pPerspectiveCamera->rotateAround(pTankBody->getPosition(), glm::vec3(cam_x_mod, cam_y_mod, 0.f) * (float)deltaTime);
+        pTankTurret->rotate(glm::vec3(0.f, cam_y_mod, 0.f) * (float)deltaTime);
 
-        
-        
+        glm::vec3 vecMove = glm::vec3(x_mod, y_mod, z_mod);
+        pTankBody->move(vecMove);
 
-        pTankBody->draw(pShaders);
-        pTankTurret->draw(pShaders);
+        sensitivity = 0.f;
+
+        CSkyboxShaders.use();
+
+        glm::mat4 skyView = glm::mat4(1.f);
+        skyView = glm::mat4(glm::mat3(pPerspectiveCamera->getViewMatrix()));
+
+        CSkyboxShaders.setFloatMat4("projection", pPerspectiveCamera->getProjection());
+        CSkyboxShaders.setFloatMat4("view", skyView);
+
+        pSkybox->draw(CSkyboxShaders);
+
+        glDepthMask(GL_TRUE);
+        glDepthFunc(GL_LESS);
+
+        CShaders.use();
+
+        CShaders.setFloatVec3("cameraPos", pPerspectiveCamera->getPosition());
+        CShaders.setFloatMat4("view", pPerspectiveCamera->getViewMatrix());
+        CShaders.setFloatMat4("projection", pPerspectiveCamera->getProjection());
+
+        CShaders.setFloatVec3("lightPos", pDirectionLight->getPosition());
+        CShaders.setFloatVec3("lightColor", pDirectionLight->getColor());
+        CShaders.setFloat("ambientStr", pDirectionLight->getAmbientStrength());
+        CShaders.setFloatVec3("ambientColor", pDirectionLight->getAmbientColor());
+        CShaders.setFloat("specStr", pDirectionLight->getSpecStrength());
+        CShaders.setFloat("specPhong", pDirectionLight->getSpecPhong());
+
+        pTankBody->draw(CShaders);
+        pTankTurret->draw(CShaders);
+        pOctopus->draw(CShaders);
 
         /* Swap front and back buffers */
         glfwSwapBuffers(window);

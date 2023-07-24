@@ -1,17 +1,15 @@
 #include "Model3D.hpp"
 
-#include "iostream"
-
 using namespace models;
 
-Model3D::Model3D(std::string strObjectPath, glm::vec3 vecPosition, glm::vec3 vecScale) {
-
+Model3D::Model3D(glm::vec3 vecPosition, glm::vec3 vecScale) {
     this->vecPosition = vecPosition;
     this->vecScale = vecScale;
+    this->vecColor = glm::vec3(0.f, 0.f, 0.f);
 
-    this->matTranslate = glm::translate(glm::mat4(1.0f), this->vecPosition);
-    this->matScale = glm::scale(glm::mat4(1.0f), this->vecScale);
-    this->matRotate = glm::mat4(1.0f);
+    this->modelMatrix = glm::mat4(1.0f);
+    this->modelMatrix = glm::translate(this->modelMatrix, this->vecPosition);
+    this->modelMatrix = glm::scale(this->modelMatrix, this->vecScale);
 }
 
 void Model3D::addTexture(const char* texturePath) {
@@ -42,6 +40,7 @@ void Model3D::addTexture(const char* texturePath) {
 
 
 void Model3D::setupVAO() {
+    this->nVertexValues = 14;
     GLuint VBO;
 
     glGenVertexArrays(1, &this->VAO);
@@ -51,22 +50,22 @@ void Model3D::setupVAO() {
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
     glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * this->fullVertexData.size(), this->fullVertexData.data(), GL_STATIC_DRAW);
 
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 11 * sizeof(GLfloat), (void*)0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, this->nVertexValues * sizeof(GLfloat), (void*)0);
 
-    //GLintptr normPtr = 3 * sizeof(float);
-    //glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 14 * sizeof(float), (void*)normPtr);
+    GLintptr normPtr = 3 * sizeof(float);
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, this->nVertexValues * sizeof(float), (void*)normPtr);
 
     GLintptr uvPtr = 3 * sizeof(float);
-    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 11 * sizeof(float), (void*)uvPtr);
+    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, this->nVertexValues * sizeof(float), (void*)uvPtr);
 
     GLintptr tangentPtr = 5 * sizeof(float);
-    glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, 11 * sizeof(float), (void*)tangentPtr);
+    glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, this->nVertexValues * sizeof(float), (void*)tangentPtr);
 
     GLintptr bitangentPtr = 8 * sizeof(float);
-    glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, 11 * sizeof(float), (void*)bitangentPtr);
+    glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, this->nVertexValues * sizeof(float), (void*)bitangentPtr);
 
     glEnableVertexAttribArray(0);
-    //glEnableVertexAttribArray(1);
+    glEnableVertexAttribArray(1);
     glEnableVertexAttribArray(2);
     glEnableVertexAttribArray(3);
     glEnableVertexAttribArray(4);
@@ -75,12 +74,35 @@ void Model3D::setupVAO() {
     glBindVertexArray(0);
 }
 
+void Model3D::setShaderValues(Shaders& CShaders) {
+    CShaders.setFloatMat4("transform", this->getTransformation());
+
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, this->getTexture(0));
+    CShaders.setInt("tex0", 0);
+
+    glActiveTexture(GL_TEXTURE1);
+    glBindTexture(GL_TEXTURE_2D, this->getTexture(1));
+    CShaders.setInt("norm_tex", 0);
+
+    CShaders.setFloatVec3("objColor", this->getColor());
+}
+
+/*
+    Draws the model
+*/
+void Model3D::draw(Shaders& CShaders) {
+    this->setShaderValues(CShaders);
+    glBindVertexArray(this->VAO);
+    glDrawArrays(GL_TRIANGLES, 0, this->fullVertexData.size() / this->nVertexValues);
+}
+
 /*
     Returns a transformation matrix
     @return transformation matrix
 */
 glm::mat4 Model3D::getTransformation() {
-    return this->matTranslate * this->matRotate * this->matScale;
+    return this->modelMatrix;
 }
 
 /*
@@ -89,7 +111,7 @@ glm::mat4 Model3D::getTransformation() {
 */
 void Model3D::move(glm::vec3 vecMove) {
     this->vecPosition += vecMove;
-    this->matTranslate = glm::translate(glm::mat4(1.0f), glm::vec3(this->vecPosition.x, this->vecPosition.y, this->vecPosition.z));
+    this->modelMatrix = glm::translate(this->modelMatrix, vecMove);
 }
 
 /*
@@ -98,7 +120,7 @@ void Model3D::move(glm::vec3 vecMove) {
 */
 void Model3D::scale(glm::vec3 vecScale) {
     this->vecScale += vecScale;
-    this->matScale = glm::scale(glm::mat4(1.0f), glm::vec3(this->vecScale.x, this->vecScale.y, this->vecScale.z));
+    this->modelMatrix = glm::scale(this->modelMatrix, vecScale);
 }
 
 /*
@@ -110,8 +132,9 @@ void Model3D::rotate(glm::vec3 vecRotate) {
     glm::quat quatRotate = glm::quat(cos(glm::radians(vecRotate.z) / 2), glm::vec3(0.f, 0.f, (sin(glm::radians(vecRotate.z) / 2))));
     quatRotate *= glm::quat(cos(glm::radians(vecRotate.y) / 2), glm::vec3(0.f, (sin(glm::radians(vecRotate.y) / 2)), 0.f));
     quatRotate *= glm::quat(cos(glm::radians(vecRotate.x) / 2), glm::vec3((sin(glm::radians(vecRotate.x) / 2)), 0.f, 0.f));
-    this->matTranslate = glm::translate(glm::mat4(1.0f), glm::vec3(this->vecPosition.x, this->vecPosition.y, this->vecPosition.z));
-    this->matRotate = glm::toMat4(quatRotate) * this->matRotate;
+    this->modelMatrix = glm::toMat4(quatRotate) * this->modelMatrix;
+    //this->matTranslate = glm::translate(glm::mat4(1.0f), glm::vec3(this->vecPosition.x, this->vecPosition.y, this->vecPosition.z));
+    //this->matRotate = glm::toMat4(quatRotate) * this->matRotate;
 }
 
 /*
@@ -123,31 +146,12 @@ void Model3D::rotateAround(glm::vec3 vecPoint, glm::vec3 vecRotate) {
     glm::quat quatRotate = glm::quat(cos(glm::radians(vecRotate.z) / 2), glm::vec3(0.f, 0.f, (sin(glm::radians(vecRotate.z) / 2))));
     quatRotate *= glm::quat(cos(glm::radians(vecRotate.y) / 2), glm::vec3(0.f, (sin(glm::radians(vecRotate.y) / 2)), 0.f));
     quatRotate *= glm::quat(cos(glm::radians(vecRotate.x) / 2), glm::vec3((sin(glm::radians(vecRotate.x) / 2)), 0.f, 0.f));
-    this->vecPosition = quatRotate * (this->vecPosition - vecPoint) + vecPoint;
-    this->matRotate = glm::toMat4(quatRotate) * this->matRotate;
-    this->matTranslate = glm::translate(glm::mat4(1.0f), glm::vec3(this->vecPosition.x, this->vecPosition.y, this->vecPosition.z));
+    this->modelMatrix = glm::toMat4(quatRotate) * this->modelMatrix;
+    //this->vecPosition = quatRotate * (this->vecPosition - vecPoint) + vecPoint;
+    //this->matRotate = glm::toMat4(quatRotate) * this->matRotate;
+    //this->matTranslate = glm::translate(glm::mat4(1.0f), glm::vec3(this->vecPosition.x, this->vecPosition.y, this->vecPosition.z));
 }
 
-/*
-    Draws the model
-*/
-void Model3D::draw(Shaders *CShaders) {
-    
-    CShaders->setFloatMat4("transform", this->getTransformation());
-
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, this->getTexture(0));
-    CShaders->setInt("tex0", 0);
-
-    glActiveTexture(GL_TEXTURE1);
-    glBindTexture(GL_TEXTURE_2D, this->getTexture(1));
-    CShaders->setInt("norm_tex", 0);
-
-    CShaders->setFloatVec3("objColor", this->getColor());
-
-    glBindVertexArray(this->VAO);
-    glDrawArrays(GL_TRIANGLES, 0, this->fullVertexData.size() / 11);
-}
 
 std::vector<GLuint> Model3D::getMeshIndices() {
     return this->meshIndices;
@@ -164,8 +168,9 @@ glm::vec3 Model3D::getPosition() {
 }
 
 void Model3D::setPosition(glm::vec3 vecPosition) {
+    this->modelMatrix = glm::translate(this->modelMatrix, this->vecPosition - vecPosition);
     this->vecPosition = vecPosition;
-    this->matTranslate = glm::translate(glm::mat4(1.0f), glm::vec3(this->vecPosition.x, this->vecPosition.y, this->vecPosition.z));
+    //this->matTranslate = glm::translate(glm::mat4(1.0f), glm::vec3(this->vecPosition.x, this->vecPosition.y, this->vecPosition.z));
 }
 
 glm::vec3 Model3D::getScale() {
@@ -173,8 +178,9 @@ glm::vec3 Model3D::getScale() {
 }
 
 void Model3D::setScale(glm::vec3 vecScale) {
+    this->modelMatrix = glm::scale(this->modelMatrix, this->vecScale - vecScale);
     this->vecScale = vecScale;
-    this->matScale = glm::scale(glm::mat4(1.0f), glm::vec3(this->vecScale.x, this->vecScale.y, this->vecScale.z));
+    //this->matScale = glm::scale(glm::mat4(1.0f), glm::vec3(this->vecScale.x, this->vecScale.y, this->vecScale.z));
 }
 
 std::vector<GLfloat> Model3D::getVertexData() {

@@ -1,15 +1,13 @@
-#ifndef TANKBODY_MODELS_HPP
-#define TANKBODY_MODELS_HPP
+#ifndef MODELS_OCTOPUS_HPP
+#define MODELS_OCTOPUS_HPP
 
 #include "../Model3D.hpp"
 
 
 namespace models {
-	class TankBody : public Model3D{
-
-
+	class Octopus : public Model3D{
 		public:
-			TankBody(std::string strObjectPath, glm::vec3 vecPosition, glm::vec3 vecScale);
+			Octopus(std::string strObjectPath, glm::vec3 vecPosition, glm::vec3 vecScale);
 
 		private:
 			void loadModel(const char *objectPath);
