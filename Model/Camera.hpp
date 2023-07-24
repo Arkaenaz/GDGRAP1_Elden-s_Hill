@@ -15,6 +15,9 @@ namespace models {
 			glm::vec3 vecRight;
 			glm::vec3 vecUp;
 
+			float fYaw;
+			float fPitch;
+
 		public:
 			Camera(glm::vec3 vecPosition, glm::vec3 vecCenter, glm::vec3 worldUp);
 			~Camera();
@@ -30,6 +33,7 @@ namespace models {
 		public:
 			glm::vec3 getPosition();
 			void setPosition(glm::vec3 vecPos);
+			void setCenter(glm::vec3 vecCenter);
 			glm::mat4 getViewMatrix();
 			virtual glm::mat4 getProjection();
 	};
