@@ -11,6 +11,9 @@ namespace models {
 		public:
 			TankTurret(std::string strObjectPath, glm::vec3 vecPosition, glm::vec3 vecScale);
 
+		public:
+			void rotateTurret(TankTurret trueTurretRotation,float deltaTime);
+
 		private:
 			void loadModel(const char *objectPath);
 			void setupVAO();

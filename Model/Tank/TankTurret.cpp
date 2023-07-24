@@ -7,6 +7,26 @@ TankTurret::TankTurret(std::string strObjectPath, glm::vec3 vecPosition, glm::ve
     this->setupVAO();
 }
 
+void TankTurret::rotateTurret(TankTurret trueTurretRotation, float deltaTime) {
+    float trueRotation = trueTurretRotation.getTransformation()[0][2];
+    float turretRotation = this->getTransformation()[0][2];
+
+    if(trueTurretRotation.getTransformation()[0][0] < 0) {
+        if(trueRotation >= 0)
+            trueRotation = (.5f - trueRotation) + .5f;
+        else
+            trueRotation = -(.5f + trueRotation) - .5f ;
+    }
+    if(this->getTransformation()[0][0] < 0) {
+        if(turretRotation >= 0)
+            turretRotation = (.5f - turretRotation) + .5f;
+        else
+            turretRotation = -(.5f + turretRotation) - .5f ;
+    }
+
+    this->rotate(glm::vec3(0.f, -(trueRotation - turretRotation) * 300, 0.f) * deltaTime);
+}
+
 void TankTurret::loadModel(const char *objectPath) {
 	//this->fullVertexData.clear();
     

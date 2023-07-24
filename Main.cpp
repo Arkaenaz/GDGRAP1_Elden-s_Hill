@@ -39,9 +39,16 @@ using namespace models;
 using namespace cameras;
 using namespace lights;
 
+const float MAX_SPEED = 1;
+
 float x_mod = 0;
 float y_mod = 0;
 float z_mod = 0;
+
+bool wPress;
+bool sPress;
+bool aPress;
+bool dPress;
 
 double xoldpos = 0.f;
 double yoldpos = 0.f;
@@ -59,31 +66,35 @@ void Key_Callback(
     if (action == GLFW_PRESS)
         switch (key) {
         case GLFW_KEY_W:
-            y_mod += BASE_SPEED;
+            wPress = true;
+            sPress = false;
             break;
         case GLFW_KEY_A:
-            x_mod -= BASE_SPEED;
+            aPress = true;
+            dPress = false;
             break;
         case GLFW_KEY_S:
-            y_mod -= BASE_SPEED;
+            sPress = true;
+            wPress = false;
             break;
         case GLFW_KEY_D:
-            x_mod += BASE_SPEED;
+            dPress = true;
+            aPress = false;
             break;
         }
     if (action == GLFW_RELEASE)
         switch (key) {
         case GLFW_KEY_W:
-            y_mod = 0.f;
+            wPress = false;
             break;
         case GLFW_KEY_A:
-            x_mod = 0.f;
+            aPress = false;
             break;
         case GLFW_KEY_S:
-            y_mod = 0.f;
+            sPress = false;
             break;
         case GLFW_KEY_D:
-            x_mod = 0.f;
+            dPress = false;
             break;
         }
 }
@@ -115,6 +126,7 @@ int main() {
     glfwMakeContextCurrent(window);
     gladLoadGL();
 
+    glfwSetKeyCallback(window, Key_Callback);
     glfwSetCursorPosCallback(window, mouse_pos_callback);
     glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
@@ -138,7 +150,7 @@ int main() {
                                  "Skybox/pz.png",
                                  "Skybox/nz.png");
 
-    PerspectiveCamera* pPerspectiveCamera = new PerspectiveCamera(glm::vec3(0.f,  105.f, -500.f), glm::vec3(0.f, 3.0f, 0.f), glm::normalize(glm::vec3(0.f, 1.0f, 0.f)), 60.0f, 1000.0f);
+    PerspectiveCamera* pPerspectiveCamera = new PerspectiveCamera(glm::vec3(0.f,  105.f, -800.f), glm::vec3(0.f, 3.0f, 0.f), glm::normalize(glm::vec3(0.f, 1.0f, 0.f)), 60.0f, 1000.0f);
     TankBody *pTankBody = new TankBody("3D/T-34/T-34/T-34.obj", glm::vec3(0.0f, 0.f, 0.f), glm::vec3(.5f));
     TankTurret *pTankTurret = new TankTurret("3D/T-34/T-34/T-34.obj", glm::vec3(0.0f, 0.f, 0.f), glm::vec3(.5f));
     TankTracks *pTankTracks = new TankTracks("3D/T-34/T-34/T-34.obj", glm::vec3(0.0f, 0.f, 0.f), glm::vec3(.5f));
@@ -149,6 +161,7 @@ int main() {
     pTankTracks->addTexture("3D/T-34/T-34/tex/T-34_Tracks.jpg");
     pTankTracks->addTexture("3D/T-34/T-34/tex/T-34_Tracks_norm.jpg");
 
+    
 
     DirectionLight* pDirectionLight = new DirectionLight(glm::vec3(4, 11, -3), glm::vec3(1, 1, 1), 1.f, glm::vec3(1, 1, 1), 0.5f, 16);
 
@@ -161,6 +174,8 @@ int main() {
     /*float cam_y_mod;
     float cam_x_mod;
     float cam_z_mod = 0.f;*/
+
+    TankTurret trueTurretRotation = TankTurret("3D/T-34/T-34/T-34.obj", glm::vec3(0.0f, 0.f, 0.f), glm::vec3(.5f));
 
     /* Loop until the user closes the window */
     while (!glfwWindowShouldClose(window))
@@ -181,19 +196,47 @@ int main() {
         float cam_x_mod = -(currentmouseypos - yoldpos) * sensitivity;
         float cam_z_mod = 0.f;
 
-        // temp stuff
-        if(pPerspectiveCamera->checkRotateAround(pTankBody->getPosition(), glm::vec3(cam_x_mod, cam_y_mod, 0.f) * (float)deltaTime).y <= 400 &&
-           pPerspectiveCamera->checkRotateAround(pTankBody->getPosition(), glm::vec3(cam_x_mod, cam_y_mod, 0.f) * (float)deltaTime).y >= 100) {
-            pPerspectiveCamera->rotateAround(pTankBody->getPosition(), glm::vec3(cam_x_mod, cam_y_mod, 0.f) * (float)deltaTime);
-            pTankTurret->rotate(glm::vec3(0.f, cam_y_mod, 0.f) * (float)deltaTime);
+        if(wPress && x_mod + 0.05f * (float)deltaTime < MAX_SPEED) {
+            x_mod += 0.3f * (float)deltaTime;
+        }
+        else if(!wPress && x_mod > 0){
+            x_mod -= 0.6f * (float)deltaTime;
         }
 
-        
-        
-        
+        if(sPress && x_mod + 0.05f * (float)deltaTime < MAX_SPEED) {
+            x_mod -= 0.3f * (float)deltaTime;
+        }
+        else if(!sPress && x_mod < 0) {
+            x_mod += 0.6f * (float)deltaTime;
+        }
 
-        glm::vec3 vecMove = glm::vec3(x_mod, y_mod, z_mod);
-        pTankBody->move(vecMove);
+        if(dPress && y_mod + 0.05f * (float)deltaTime < MAX_SPEED) {
+            y_mod += 0.3f * (float)deltaTime;
+        }
+        else if(!dPress && y_mod > 0) {
+            y_mod -= 0.6f * (float)deltaTime;
+        }
+
+        if(aPress && y_mod + 0.05f * (float)deltaTime < MAX_SPEED) {
+            y_mod -= 0.3f * (float)deltaTime;
+        }
+        else if(!aPress && y_mod < 0) {
+            y_mod += 0.6f * (float)deltaTime;
+        }
+
+        // temp stuff
+        if(pPerspectiveCamera->checkRotateAround(pTankBody->getPosition(), glm::vec3(cam_x_mod, cam_y_mod, 0.f) * (float)deltaTime).y <= 490 &&
+           pPerspectiveCamera->checkRotateAround(pTankBody->getPosition(), glm::vec3(cam_x_mod, cam_y_mod, 0.f) * (float)deltaTime).y >= 100) {
+            pPerspectiveCamera->rotateAround(pTankBody->getPosition(), glm::vec3(cam_x_mod, cam_y_mod, 0.f) * (float)deltaTime);
+            trueTurretRotation.rotate(glm::vec3(0.f, cam_y_mod, 0.f) * (float)deltaTime);
+        }
+
+        pTankBody->move(glm::vec3(0,0, x_mod));
+        pTankTurret->setPosition(-pTankBody->getPosition());
+        pTankTracks->setPosition(-pTankBody->getPosition());
+
+        pTankTurret->rotateTurret(trueTurretRotation, deltaTime);
+        pTankBody->rotate(glm::vec3(0, y_mod, 0));
 
         sensitivity = 0.f;
 
