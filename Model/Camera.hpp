@@ -15,9 +15,6 @@ namespace models {
 			glm::vec3 vecRight;
 			glm::vec3 vecUp;
 
-			float fYaw;
-			float fPitch;
-
 		public:
 			Camera(glm::vec3 vecPosition, glm::vec3 vecCenter, glm::vec3 worldUp);
 			~Camera();
