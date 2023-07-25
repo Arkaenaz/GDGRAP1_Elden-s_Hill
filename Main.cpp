@@ -149,8 +149,8 @@ int main() {
                                  "Skybox/ny.png",
                                  "Skybox/pz.png",
                                  "Skybox/nz.png");
+    
 
-    PerspectiveCamera* pPerspectiveCamera = new PerspectiveCamera(glm::vec3(0.f,  105.f, -800.f), glm::vec3(0.f, 3.0f, 0.f), glm::normalize(glm::vec3(0.f, 1.0f, 0.f)), 60.0f, 1000.0f);
     TankBody *pTankBody = new TankBody("3D/T-34/T-34/T-34.obj", glm::vec3(0.0f, 0.f, 0.f), glm::vec3(.5f));
     TankTurret *pTankTurret = new TankTurret("3D/T-34/T-34/T-34.obj", glm::vec3(0.0f, 0.f, 0.f), glm::vec3(.5f));
     TankTracks *pTankTracks = new TankTracks("3D/T-34/T-34/T-34.obj", glm::vec3(0.0f, 0.f, 0.f), glm::vec3(.5f));
@@ -161,6 +161,9 @@ int main() {
     pTankTracks->addTexture("3D/T-34/T-34/tex/T-34_Tracks.jpg");
     pTankTracks->addTexture("3D/T-34/T-34/tex/T-34_Tracks_norm.jpg");
     
+    PerspectiveCamera* pPerspectiveCamera = new PerspectiveCamera(glm::vec3(0.f,  105.f, -800.f), glm::vec3(0.f, 3.0f, 0.f), glm::normalize(glm::vec3(0.f, 1.0f, 0.f)), 60.0f, 1000.0f);
+    OrthoCamera* pOrthoCamera = new OrthoCamera(glm::vec3(0.f, 90.f, 1.f), glm::vec3(0.f, 3.0f, 0.f), glm::normalize(glm::vec3(0.f, 1.0f, 0.0f)), glm::vec3(-1000.0f, -1000.0f, -1000.f), glm::vec3(1000.0f, 1000.0f, 1000.f));
+    Camera* pCurrentCamera = pPerspectiveCamera;
 
     DirectionLight* pDirectionLight = new DirectionLight(glm::vec3(4, 11, -3), glm::vec3(1, 1, 1), 1.f, glm::vec3(1, 1, 1), 0.5f, 16);
 
@@ -224,11 +227,16 @@ int main() {
         }
 
         // temp stuff
-        if(pPerspectiveCamera->checkRotateAround(pTankBody->getPosition(), glm::vec3(cam_x_mod, cam_y_mod, 0.f) * (float)deltaTime).y <= 490 &&
-           pPerspectiveCamera->checkRotateAround(pTankBody->getPosition(), glm::vec3(cam_x_mod, cam_y_mod, 0.f) * (float)deltaTime).y >= 100) {
-            pPerspectiveCamera->rotateAround(pTankBody->getPosition(), glm::vec3(cam_x_mod, cam_y_mod, 0.f) * (float)deltaTime);
-            trueTurretRotation.rotate(glm::vec3(0.f, cam_y_mod, 0.f) * (float)deltaTime);
+        if (pCurrentCamera == pPerspectiveCamera) {
+            if(pPerspectiveCamera->checkRotateAround(pTankBody->getPosition(), glm::vec3(cam_x_mod, cam_y_mod, 0.f) * (float)deltaTime).y <= 490 &&
+               pPerspectiveCamera->checkRotateAround(pTankBody->getPosition(), glm::vec3(cam_x_mod, cam_y_mod, 0.f) * (float)deltaTime).y >= 100) {
+                pPerspectiveCamera->rotateAround(pTankBody->getPosition(), glm::vec3(cam_x_mod, cam_y_mod, 0.f) * (float)deltaTime);
+                trueTurretRotation.rotate(glm::vec3(0.f, cam_y_mod, 0.f) * (float)deltaTime);
+            }
         }
+
+        pOrthoCamera->setPosition(glm::vec3(pTankBody->getPosition().x, 90.f, pTankBody->getPosition().z + 1.f));
+        pOrthoCamera->setCenter(pTankBody->getPosition());
 
         pTankBody->move(glm::vec3(0,0, x_mod));
         pTankTurret->setPosition(-pTankBody->getPosition());
@@ -244,7 +252,7 @@ int main() {
         glm::mat4 skyView = glm::mat4(1.f);
         skyView = glm::mat4(glm::mat3(pPerspectiveCamera->getViewMatrix()));
 
-        CSkyboxShaders.setFloatMat4("projection", pPerspectiveCamera->getProjection());
+        CSkyboxShaders.setFloatMat4("projection", pCurrentCamera->getProjection());
         CSkyboxShaders.setFloatMat4("view", skyView);
 
         pSkybox->draw(CSkyboxShaders);
@@ -254,9 +262,9 @@ int main() {
 
         CShaders.use();
 
-        CShaders.setFloatVec3("cameraPos", pPerspectiveCamera->getPosition());
-        CShaders.setFloatMat4("view", pPerspectiveCamera->getViewMatrix());
-        CShaders.setFloatMat4("projection", pPerspectiveCamera->getProjection());
+        CShaders.setFloatVec3("cameraPos", pCurrentCamera->getPosition());
+        CShaders.setFloatMat4("view", pCurrentCamera->getViewMatrix());
+        CShaders.setFloatMat4("projection", pCurrentCamera->getProjection());
 
         CShaders.setFloatVec3("lightPos", pDirectionLight->getPosition());
         CShaders.setFloatVec3("lightColor", pDirectionLight->getColor());

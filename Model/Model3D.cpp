@@ -7,9 +7,12 @@ Model3D::Model3D(glm::vec3 vecPosition, glm::vec3 vecScale) {
     this->vecScale = vecScale;
     this->vecColor = glm::vec3(0.f, 0.f, 0.f);
 
-    this->modelMatrix = glm::mat4(1.0f);
-    this->modelMatrix = glm::translate(this->modelMatrix, this->vecPosition);
-    this->modelMatrix = glm::scale(this->modelMatrix, this->vecScale);
+    //this->modelMatrix = glm::mat4(1.0f);
+    //this->modelMatrix = glm::translate(this->modelMatrix, this->vecPosition);
+    //this->modelMatrix = glm::scale(this->modelMatrix, this->vecScale);
+    this->matTranslate = glm::translate(glm::mat4(1.0f), this->vecPosition);
+    this->matScale = glm::scale(glm::mat4(1.0f), this->vecScale);
+    this->matRotate = glm::mat4(1.0f);
 }
 
 void Model3D::addTexture(const char* texturePath) {
@@ -102,6 +105,7 @@ void Model3D::draw(Shaders& CShaders) {
     @return transformation matrix
 */
 glm::mat4 Model3D::getTransformation() {
+    this->modelMatrix = this->matTranslate * this->matRotate * this->matScale;
     return this->modelMatrix;
 }
 
@@ -111,7 +115,7 @@ glm::mat4 Model3D::getTransformation() {
 */
 void Model3D::move(glm::vec3 vecMove) {
     this->vecPosition += vecMove;
-    this->modelMatrix = glm::translate(this->modelMatrix, vecMove);
+    this->matTranslate = glm::translate(glm::mat4(1.0f), this->vecPosition);
 }
 
 /*
@@ -120,7 +124,7 @@ void Model3D::move(glm::vec3 vecMove) {
 */
 void Model3D::scale(glm::vec3 vecScale) {
     this->vecScale += vecScale;
-    this->modelMatrix = glm::scale(this->modelMatrix, vecScale);
+    this->matScale = glm::scale(glm::mat4(1.0f), this->vecScale);
 }
 
 /*
@@ -132,9 +136,9 @@ void Model3D::rotate(glm::vec3 vecRotate) {
     glm::quat quatRotate = glm::quat(cos(glm::radians(vecRotate.z) / 2), glm::vec3(0.f, 0.f, (sin(glm::radians(vecRotate.z) / 2))));
     quatRotate *= glm::quat(cos(glm::radians(vecRotate.y) / 2), glm::vec3(0.f, (sin(glm::radians(vecRotate.y) / 2)), 0.f));
     quatRotate *= glm::quat(cos(glm::radians(vecRotate.x) / 2), glm::vec3((sin(glm::radians(vecRotate.x) / 2)), 0.f, 0.f));
-    this->modelMatrix = glm::toMat4(quatRotate) * this->modelMatrix;
-    //this->matTranslate = glm::translate(glm::mat4(1.0f), glm::vec3(this->vecPosition.x, this->vecPosition.y, this->vecPosition.z));
-    //this->matRotate = glm::toMat4(quatRotate) * this->matRotate;
+    //this->modelMatrix = glm::toMat4(quatRotate) * this->modelMatrix;
+    this->matTranslate = glm::translate(glm::mat4(1.0f), glm::vec3(this->vecPosition.x, this->vecPosition.y, this->vecPosition.z));
+    this->matRotate = glm::toMat4(quatRotate) * this->matRotate;
 }
 
 /*
@@ -146,10 +150,10 @@ void Model3D::rotateAround(glm::vec3 vecPoint, glm::vec3 vecRotate) {
     glm::quat quatRotate = glm::quat(cos(glm::radians(vecRotate.z) / 2), glm::vec3(0.f, 0.f, (sin(glm::radians(vecRotate.z) / 2))));
     quatRotate *= glm::quat(cos(glm::radians(vecRotate.y) / 2), glm::vec3(0.f, (sin(glm::radians(vecRotate.y) / 2)), 0.f));
     quatRotate *= glm::quat(cos(glm::radians(vecRotate.x) / 2), glm::vec3((sin(glm::radians(vecRotate.x) / 2)), 0.f, 0.f));
-    this->modelMatrix = glm::toMat4(quatRotate) * this->modelMatrix;
-    //this->vecPosition = quatRotate * (this->vecPosition - vecPoint) + vecPoint;
-    //this->matRotate = glm::toMat4(quatRotate) * this->matRotate;
-    //this->matTranslate = glm::translate(glm::mat4(1.0f), glm::vec3(this->vecPosition.x, this->vecPosition.y, this->vecPosition.z));
+    //this->modelMatrix = glm::toMat4(quatRotate) * this->modelMatrix;
+    this->vecPosition = quatRotate * (this->vecPosition - vecPoint) + vecPoint;
+    this->matRotate = glm::toMat4(quatRotate) * this->matRotate;
+    this->matTranslate = glm::translate(glm::mat4(1.0f), glm::vec3(this->vecPosition.x, this->vecPosition.y, this->vecPosition.z));
 }
 
 
@@ -168,9 +172,9 @@ glm::vec3 Model3D::getPosition() {
 }
 
 void Model3D::setPosition(glm::vec3 vecPosition) {
-    this->modelMatrix = glm::translate(this->modelMatrix, this->vecPosition - vecPosition);
+    //this->modelMatrix = glm::translate(this->modelMatrix, this->vecPosition - vecPosition);
     this->vecPosition = vecPosition;
-    //this->matTranslate = glm::translate(glm::mat4(1.0f), glm::vec3(this->vecPosition.x, this->vecPosition.y, this->vecPosition.z));
+    this->matTranslate = glm::translate(glm::mat4(1.0f), glm::vec3(this->vecPosition.x, this->vecPosition.y, this->vecPosition.z));
 }
 
 glm::vec3 Model3D::getScale() {
@@ -178,9 +182,9 @@ glm::vec3 Model3D::getScale() {
 }
 
 void Model3D::setScale(glm::vec3 vecScale) {
-    this->modelMatrix = glm::scale(this->modelMatrix, this->vecScale - vecScale);
+    //this->modelMatrix = glm::scale(this->modelMatrix, this->vecScale - vecScale);
     this->vecScale = vecScale;
-    //this->matScale = glm::scale(glm::mat4(1.0f), glm::vec3(this->vecScale.x, this->vecScale.y, this->vecScale.z));
+    this->matScale = glm::scale(glm::mat4(1.0f), glm::vec3(this->vecScale.x, this->vecScale.y, this->vecScale.z));
 }
 
 std::vector<GLfloat> Model3D::getVertexData() {

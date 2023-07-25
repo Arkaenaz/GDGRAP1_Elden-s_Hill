@@ -39,6 +39,9 @@ namespace models {
 			glm::vec3 vecScale;
 
 			glm::mat4 modelMatrix;
+			glm::mat4 matTranslate;
+			glm::mat4 matScale;
+			glm::mat4 matRotate;
 
 		public:
 			Model3D(glm::vec3 vecPosition = glm::vec3(0.f), glm::vec3 vecScale = glm::vec3(1.f));
