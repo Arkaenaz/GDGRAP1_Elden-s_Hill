@@ -27,6 +27,10 @@ void TankTurret::rotateTurret(TankTurret trueTurretRotation, float deltaTime) {
     this->rotate(glm::vec3(0.f, -(trueRotation - turretRotation) * 300, 0.f) * deltaTime);
 }
 
+void TankTurret::moveTurret(glm::vec3 vecPos) {
+    this->modelMatrix = glm::translate(this->modelMatrix, vecPos);
+}
+
 void TankTurret::loadModel(const char *objectPath) {
 	//this->fullVertexData.clear();
     

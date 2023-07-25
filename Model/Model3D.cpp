@@ -110,7 +110,7 @@ glm::mat4 Model3D::getTransformation() {
     @param vecMove movement speed values
 */
 void Model3D::move(glm::vec3 vecMove) {
-    this->vecPosition += vecMove;
+    this->vecRelativePosition += vecMove;
     this->modelMatrix = glm::translate(this->modelMatrix, vecMove);
 }
 
@@ -128,13 +128,22 @@ void Model3D::scale(glm::vec3 vecScale) {
     Quaternion initialization used is simpler than hard coding the quaternions so it was used.
     @param vecRotate rotation angles
 */
-void Model3D::rotate(glm::vec3 vecRotate) {
+
+
+
+void Model3D::rotateQuat(glm::vec3 vecRotate) {
     glm::quat quatRotate = glm::quat(cos(glm::radians(vecRotate.z) / 2), glm::vec3(0.f, 0.f, (sin(glm::radians(vecRotate.z) / 2))));
     quatRotate *= glm::quat(cos(glm::radians(vecRotate.y) / 2), glm::vec3(0.f, (sin(glm::radians(vecRotate.y) / 2)), 0.f));
     quatRotate *= glm::quat(cos(glm::radians(vecRotate.x) / 2), glm::vec3((sin(glm::radians(vecRotate.x) / 2)), 0.f, 0.f));
     this->modelMatrix = glm::toMat4(quatRotate) * this->modelMatrix;
     //this->matTranslate = glm::translate(glm::mat4(1.0f), glm::vec3(this->vecPosition.x, this->vecPosition.y, this->vecPosition.z));
     //this->matRotate = glm::toMat4(quatRotate) * this->matRotate;
+}
+
+void Model3D::rotate(glm::vec3 vecRotate) {
+    glm::mat4 transMatrix = glm::translate(glm::mat4(1.0f), this->vecPosition);
+    transMatrix = glm::rotate(transMatrix, glm::radians(vecRotate.y) / 2, glm::normalize(glm::vec3(0,1,0)));
+    this->modelMatrix *= transMatrix;
 }
 
 /*
@@ -167,9 +176,13 @@ glm::vec3 Model3D::getPosition() {
     return this->vecPosition;
 }
 
+glm::vec3 Model3D::getRelativePosition() {
+    return this->vecRelativePosition;
+}
+
 void Model3D::setPosition(glm::vec3 vecPosition) {
-    this->modelMatrix = glm::translate(this->modelMatrix, this->vecPosition - vecPosition);
-    this->vecPosition = vecPosition;
+    this->modelMatrix[3][0] = vecPosition.x;
+    //this->vecPosition = vecPosition;
     //this->matTranslate = glm::translate(glm::mat4(1.0f), glm::vec3(this->vecPosition.x, this->vecPosition.y, this->vecPosition.z));
 }
 

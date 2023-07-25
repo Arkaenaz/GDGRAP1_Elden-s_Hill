@@ -36,6 +36,7 @@ namespace models {
 
 			glm::vec3 vecColor;
 			glm::vec3 vecPosition;
+			glm::vec3 vecRelativePosition;
 			glm::vec3 vecScale;
 
 			glm::mat4 modelMatrix;
@@ -56,6 +57,7 @@ namespace models {
 		public:
 			void move(glm::vec3 vecMove);
 			void scale(glm::vec3 vecScale);
+			void rotateQuat(glm::vec3 vecRotate);
 			void rotate(glm::vec3 vecRotate);
 			void rotateAround(glm::vec3 vecPoint, glm::vec3 vecRotate);
 
@@ -65,6 +67,7 @@ namespace models {
 			GLuint getTexture(int nIndex);
 			glm::mat4 getTransformation();
 			glm::vec3 getPosition();
+			glm::vec3 getRelativePosition();
 			void setPosition(glm::vec3 vecPosition);
 			glm::vec3 getScale();
 			void setScale(glm::vec3 vecScale);
