@@ -13,6 +13,7 @@ namespace models {
 
 		public:
 			void rotateTurret(TankTurret trueTurretRotation,float deltaTime);
+			void moveTurret(glm::vec3 vecPos);
 
 		private:
 			void loadModel(const char *objectPath);

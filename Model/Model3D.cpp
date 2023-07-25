@@ -143,6 +143,12 @@ void Model3D::rotate(glm::vec3 vecRotate) {
     this->matRotate = glm::toMat4(quatRotate) * this->matRotate;
 }
 
+void Model3D::rotate(glm::vec3 vecRotate) {
+    glm::mat4 transMatrix = glm::translate(glm::mat4(1.0f), this->vecPosition);
+    transMatrix = glm::rotate(transMatrix, glm::radians(vecRotate.y) / 2, glm::normalize(glm::vec3(0,1,0)));
+    this->modelMatrix *= transMatrix;
+}
+
 /*
     Rotates around a point
     @param vecPoint the point to rotate around
@@ -172,6 +178,10 @@ GLuint Model3D::getTexture(int nIndex) {
 
 glm::vec3 Model3D::getPosition() {
     return this->vecPosition;
+}
+
+glm::vec3 Model3D::getRelativePosition() {
+    return this->vecRelativePosition;
 }
 
 void Model3D::setPosition(glm::vec3 vecPosition) {

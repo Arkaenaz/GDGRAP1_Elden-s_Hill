@@ -39,7 +39,7 @@ using namespace models;
 using namespace cameras;
 using namespace lights;
 
-const float MAX_SPEED = 1;
+const float MAX_SPEED = 1.f;
 
 float x_mod = 0;
 float y_mod = 0;
@@ -68,18 +68,26 @@ void Key_Callback(
         case GLFW_KEY_W:
             wPress = true;
             sPress = false;
+            dPress = false;
+            aPress = false;
             break;
         case GLFW_KEY_A:
             aPress = true;
             dPress = false;
+            sPress = false;
+            wPress = false;
             break;
         case GLFW_KEY_S:
             sPress = true;
             wPress = false;
+            dPress = false;
+            aPress = false;
             break;
         case GLFW_KEY_D:
             dPress = true;
             aPress = false;
+            wPress = false;
+            sPress = false;
             break;
         }
     if (action == GLFW_RELEASE)
@@ -200,6 +208,7 @@ int main() {
 
         if(wPress && x_mod + 0.05f * (float)deltaTime < MAX_SPEED) {
             x_mod += 0.3f * (float)deltaTime;
+ 
         }
         else if(!wPress && x_mod > 0){
             x_mod -= 0.6f * (float)deltaTime;
@@ -212,17 +221,17 @@ int main() {
             x_mod += 0.6f * (float)deltaTime;
         }
 
-        if(dPress && y_mod + 0.05f * (float)deltaTime < MAX_SPEED) {
-            y_mod += 0.3f * (float)deltaTime;
+        if(aPress && y_mod + 0.05f * (float)deltaTime < MAX_SPEED) {
+            y_mod += 0.1f * (float)deltaTime;
         }
-        else if(!dPress && y_mod > 0) {
+        else if(!aPress && y_mod > 0) {
             y_mod -= 0.6f * (float)deltaTime;
         }
 
-        if(aPress && y_mod + 0.05f * (float)deltaTime < MAX_SPEED) {
-            y_mod -= 0.3f * (float)deltaTime;
+        if(dPress && y_mod + 0.05f * (float)deltaTime < MAX_SPEED) {
+            y_mod -= 0.1f * (float)deltaTime;
         }
-        else if(!aPress && y_mod < 0) {
+        else if(!dPress && y_mod < 0) {
             y_mod += 0.6f * (float)deltaTime;
         }
 
@@ -244,6 +253,7 @@ int main() {
 
         pTankTurret->rotateTurret(trueTurretRotation, deltaTime);
         pTankBody->rotate(glm::vec3(0, y_mod, 0));
+        pTankTracks->rotate(glm::vec3(0, y_mod, 0));
 
         sensitivity = 0.f;
 
