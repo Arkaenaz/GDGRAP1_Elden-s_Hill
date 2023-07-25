@@ -39,7 +39,7 @@ using namespace models;
 using namespace cameras;
 using namespace lights;
 
-const float MAX_SPEED = 1.f;
+const float MAX_SPEED = 0.1f;
 
 float x_mod = 0;
 float y_mod = 0;
@@ -206,7 +206,7 @@ int main() {
         float cam_x_mod = -(currentmouseypos - yoldpos) * sensitivity;
         float cam_z_mod = 0.f;
 
-        if(wPress && x_mod + 0.05f * (float)deltaTime < MAX_SPEED) {
+        if(wPress && x_mod + 0.3f * (float)deltaTime < MAX_SPEED) {
             x_mod += 0.3f * (float)deltaTime;
  
         }
@@ -214,21 +214,21 @@ int main() {
             x_mod -= 0.6f * (float)deltaTime;
         }
 
-        if(sPress && x_mod + 0.05f * (float)deltaTime < MAX_SPEED) {
+        if(sPress && x_mod - 0.3f * (float)deltaTime > -MAX_SPEED) {
             x_mod -= 0.3f * (float)deltaTime;
         }
         else if(!sPress && x_mod < 0) {
             x_mod += 0.6f * (float)deltaTime;
         }
 
-        if(aPress && y_mod + 0.05f * (float)deltaTime < MAX_SPEED) {
+        if(aPress && y_mod + 0.1f * (float)deltaTime < MAX_SPEED) {
             y_mod += 0.1f * (float)deltaTime;
         }
         else if(!aPress && y_mod > 0) {
             y_mod -= 0.6f * (float)deltaTime;
         }
 
-        if(dPress && y_mod + 0.05f * (float)deltaTime < MAX_SPEED) {
+        if(dPress && y_mod - 0.1f * (float)deltaTime > -MAX_SPEED) {
             y_mod -= 0.1f * (float)deltaTime;
         }
         else if(!dPress && y_mod < 0) {
@@ -247,13 +247,18 @@ int main() {
         pOrthoCamera->setPosition(glm::vec3(pTankBody->getPosition().x, 90.f, pTankBody->getPosition().z + 1.f));
         pOrthoCamera->setCenter(pTankBody->getPosition());
 
-        pTankBody->move(glm::vec3(0,0, x_mod));
+        pTankBody->move(glm::vec3(x_mod * -pTankBody->getTransformation()[0][2] / 0.5,0, x_mod * pTankBody->getTransformation()[0][0] / 0.5));
         pTankTurret->setPosition(pTankBody->getPosition());
         pTankTracks->setPosition(pTankBody->getPosition());
 
         pTankTurret->rotateTurret(trueTurretRotation, deltaTime);
         pTankBody->rotate(glm::vec3(0, y_mod, 0));
         pTankTracks->rotate(glm::vec3(0, y_mod, 0));
+
+
+        std::cout << std::endl;
+        std::cout << std::endl;
+
 
         sensitivity = 0.f;
 

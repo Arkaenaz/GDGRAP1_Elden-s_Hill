@@ -36,6 +36,7 @@ namespace models {
 
 			glm::vec3 vecColor;
 			glm::vec3 vecPosition;
+			glm::vec3 vecRotation;
 			glm::vec3 vecScale;
 
 			glm::mat4 modelMatrix;
