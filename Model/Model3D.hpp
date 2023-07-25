@@ -74,6 +74,7 @@ namespace models {
 			void setScale(glm::vec3 vecScale);
 			glm::vec3 getColor();
 			void setColor(glm::vec3 vecColor);
+			glm::vec3 getRotationAngles();
 	};
 }
 
