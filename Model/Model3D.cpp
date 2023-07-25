@@ -5,6 +5,7 @@ using namespace models;
 Model3D::Model3D(glm::vec3 vecPosition, glm::vec3 vecScale) {
     this->vecPosition = vecPosition;
     this->vecScale = vecScale;
+    this->vecRotation = glm::vec3(0.f);
     this->vecColor = glm::vec3(0.f, 0.f, 0.f);
 
     //this->modelMatrix = glm::mat4(1.0f);
@@ -133,9 +134,10 @@ void Model3D::scale(glm::vec3 vecScale) {
     @param vecRotate rotation angles
 */
 void Model3D::rotate(glm::vec3 vecRotate) {
-    glm::quat quatRotate = glm::quat(cos(glm::radians(vecRotate.z) / 2), glm::vec3(0.f, 0.f, (sin(glm::radians(vecRotate.z) / 2))));
-    quatRotate *= glm::quat(cos(glm::radians(vecRotate.y) / 2), glm::vec3(0.f, (sin(glm::radians(vecRotate.y) / 2)), 0.f));
-    quatRotate *= glm::quat(cos(glm::radians(vecRotate.x) / 2), glm::vec3((sin(glm::radians(vecRotate.x) / 2)), 0.f, 0.f));
+    this->vecRotation = vecRotate;
+    glm::quat quatRotate = glm::quat(cos(glm::radians(this->vecRotation.z) / 2), glm::vec3(0.f, 0.f, (sin(glm::radians(this->vecRotation.z) / 2))));
+    quatRotate *= glm::quat(cos(glm::radians(this->vecRotation.y) / 2), glm::vec3(0.f, (sin(glm::radians(this->vecRotation.y) / 2)), 0.f));
+    quatRotate *= glm::quat(cos(glm::radians(this->vecRotation.x) / 2), glm::vec3((sin(glm::radians(this->vecRotation.x) / 2)), 0.f, 0.f));
     //this->modelMatrix = glm::toMat4(quatRotate) * this->modelMatrix;
     this->matTranslate = glm::translate(glm::mat4(1.0f), glm::vec3(this->vecPosition.x, this->vecPosition.y, this->vecPosition.z));
     this->matRotate = glm::toMat4(quatRotate) * this->matRotate;
@@ -147,9 +149,10 @@ void Model3D::rotate(glm::vec3 vecRotate) {
     @param vecRotate rotation angles
 */
 void Model3D::rotateAround(glm::vec3 vecPoint, glm::vec3 vecRotate) {
-    glm::quat quatRotate = glm::quat(cos(glm::radians(vecRotate.z) / 2), glm::vec3(0.f, 0.f, (sin(glm::radians(vecRotate.z) / 2))));
-    quatRotate *= glm::quat(cos(glm::radians(vecRotate.y) / 2), glm::vec3(0.f, (sin(glm::radians(vecRotate.y) / 2)), 0.f));
-    quatRotate *= glm::quat(cos(glm::radians(vecRotate.x) / 2), glm::vec3((sin(glm::radians(vecRotate.x) / 2)), 0.f, 0.f));
+    this->vecRotation = vecRotate;
+    glm::quat quatRotate = glm::quat(cos(glm::radians(this->vecRotation.z) / 2), glm::vec3(0.f, 0.f, (sin(glm::radians(this->vecRotation.z) / 2))));
+    quatRotate *= glm::quat(cos(glm::radians(this->vecRotation.y) / 2), glm::vec3(0.f, (sin(glm::radians(this->vecRotation.y) / 2)), 0.f));
+    quatRotate *= glm::quat(cos(glm::radians(this->vecRotation.x) / 2), glm::vec3((sin(glm::radians(this->vecRotation.x) / 2)), 0.f, 0.f));
     //this->modelMatrix = glm::toMat4(quatRotate) * this->modelMatrix;
     this->vecPosition = quatRotate * (this->vecPosition - vecPoint) + vecPoint;
     this->matRotate = glm::toMat4(quatRotate) * this->matRotate;
@@ -197,4 +200,8 @@ glm::vec3 Model3D::getColor() {
 
 void Model3D::setColor(glm::vec3 vecColor) {
     this->vecColor = vecColor;
+}
+
+glm::vec3 Model3D::getRotationAngles() {
+    return this->vecRotation;
 }
