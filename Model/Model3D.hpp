@@ -36,7 +36,6 @@ namespace models {
 
 			glm::vec3 vecColor;
 			glm::vec3 vecPosition;
-			glm::vec3 vecRelativePosition;
 			glm::vec3 vecScale;
 
 			glm::mat4 modelMatrix;
@@ -70,7 +69,6 @@ namespace models {
 			GLuint getTexture(int nIndex);
 			glm::mat4 getTransformation();
 			glm::vec3 getPosition();
-			glm::vec3 getRelativePosition();
 			void setPosition(glm::vec3 vecPosition);
 			glm::vec3 getScale();
 			void setScale(glm::vec3 vecScale);

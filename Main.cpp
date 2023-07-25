@@ -248,8 +248,8 @@ int main() {
         pOrthoCamera->setCenter(pTankBody->getPosition());
 
         pTankBody->move(glm::vec3(0,0, x_mod));
-        pTankTurret->setPosition(-pTankBody->getPosition());
-        pTankTracks->setPosition(-pTankBody->getPosition());
+        pTankTurret->setPosition(pTankBody->getPosition());
+        pTankTracks->setPosition(pTankBody->getPosition());
 
         pTankTurret->rotateTurret(trueTurretRotation, deltaTime);
         pTankBody->rotate(glm::vec3(0, y_mod, 0));
