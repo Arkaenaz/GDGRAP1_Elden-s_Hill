@@ -11,7 +11,7 @@ PerspectiveCamera::PerspectiveCamera(glm::vec3 vecPosition, glm::vec3 vecCenter,
 
 PerspectiveCamera::~PerspectiveCamera() {}
 
-void PerspectiveCamera::updatePosition(glm::vec3 vecRotate, glm::vec3 vecPoint) {
+void PerspectiveCamera::updateTP(glm::vec3 vecRotate, glm::vec3 vecPoint) {
 	float fX = this->fZoom * cos(glm::radians(this->fPitch));
 	float fY = this->fZoom * sin(glm::radians(this->fPitch));
 
@@ -23,13 +23,32 @@ void PerspectiveCamera::updatePosition(glm::vec3 vecRotate, glm::vec3 vecPoint) 
 	this->vecPosition.y = vecPoint.y + fY;
 	this->vecPosition.z = vecPoint.z - fZOffset;
 
-	//this->fYaw = 180 - vecRotate.y + this->fPitch;
+	this->updateVectors();
+}
+
+void PerspectiveCamera::updateFP(glm::vec3 vecRotate, glm::vec3 vecPoint) {
+	float fX = cos(glm::radians(this->fPitch));
+	float fY = sin(glm::radians(this->fPitch));
+
+	float fAngle = this->fYaw;
+	float fXOffset = fX * sin(glm::radians(fAngle));
+	float fZOffset = fX * cos(glm::radians(fAngle));
+
+	this->vecPosition.x = vecPoint.x - fXOffset;
+	this->vecPosition.y = vecPoint.y + fY;
+	this->vecPosition.z = vecPoint.z - fZOffset;
+
 	glm::vec3 direction;
+
 	direction.x = cos(glm::radians(this->fYaw)) * cos(glm::radians(this->fPitch));
 	direction.y = sin(glm::radians(this->fPitch));
 	direction.z = sin(glm::radians(this->fYaw)) * cos(glm::radians(this->fPitch));
 
-	//this->vecCenter = this->vecPosition + glm::normalize(direction);
+	this->vecPosition += this->fZoom * glm::normalize(direction);
+
+	this->vecCenter = this->vecPosition +  glm::normalize(direction);
+
+	this->updateVectors();
 }
 
 void PerspectiveCamera::addYaw(float fYaw) {
@@ -42,6 +61,10 @@ void PerspectiveCamera::addPitch(float fPitch) {
 
 float PerspectiveCamera::getYaw() {
 	return this->fYaw;
+}
+
+void PerspectiveCamera::setYaw(float fYaw) {
+	this->fYaw = fYaw;
 }
 
 float PerspectiveCamera::getPitch() {
@@ -58,4 +81,8 @@ glm::mat4 PerspectiveCamera::getProjection() {
 
 void PerspectiveCamera::setZoom(float fZoom) {
 	this->fZoom = fZoom;
+}
+
+void PerspectiveCamera::setFOV(float fFOV) {
+	this->fFOV = fFOV;
 }

@@ -16,6 +16,7 @@ uniform vec3 cameraPos;
 
 in vec2 texCoord;
 uniform vec3 objColor;
+uniform vec3 viewColor;
 
 in vec3 normCoord;
 in vec3 fragPos;
@@ -50,5 +51,5 @@ void main() {
 	vec3 result = specColor + diffuse + ambientCol;
 	//result *= intensity; im also a dumbass for not commenting this out
 
-	FragColor = vec4(result, 1.0) * texture(tex0, texCoord) + vec4(objColor, 1.0);
+	FragColor = vec4(result, 1.0) * texture(tex0, texCoord) + vec4(objColor, 1.0) + vec4(viewColor, 1.0);
 }

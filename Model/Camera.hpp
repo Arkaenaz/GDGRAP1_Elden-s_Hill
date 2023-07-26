@@ -19,7 +19,7 @@ namespace models {
 			Camera(glm::vec3 vecPosition, glm::vec3 vecCenter, glm::vec3 worldUp);
 			~Camera();
 
-		private:
+		protected:
 			void updateVectors();
 
 		public:

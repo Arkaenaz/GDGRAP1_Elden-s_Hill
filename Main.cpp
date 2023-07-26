@@ -48,10 +48,14 @@ float z_mod = 0;
 float ortho_x_mod = 0;
 float ortho_y_mod = 0;
 
+float zoom_mod = 0.f;
+
 bool wPress;
 bool sPress;
 bool aPress;
 bool dPress;
+bool ePress;
+bool qPress;
 bool bCamera = true;
 bool bZoom = false;
 
@@ -94,6 +98,12 @@ void Key_Callback(
             wPress = false;
             sPress = false;
             break;
+        case GLFW_KEY_E:
+            ePress = true;
+            break;
+        case GLFW_KEY_Q:
+            qPress = true;
+            break;
         case GLFW_KEY_1:
             if (bCamera)
                 bZoom = !bZoom;
@@ -104,6 +114,7 @@ void Key_Callback(
             break;
 
         case GLFW_KEY_2:
+            bZoom = false;
             bCamera = false;
             break;
         }
@@ -120,6 +131,12 @@ void Key_Callback(
             break;
         case GLFW_KEY_D:
             dPress = false;
+            break;
+        case GLFW_KEY_E:
+            ePress = false;
+            break;
+        case GLFW_KEY_Q:
+            qPress = false;
             break;
         }
 }
@@ -204,12 +221,15 @@ int main() {
 
     TankTurret trueTurretRotation = TankTurret("3D/T-34/T-34/T-34.obj", glm::vec3(0.0f, 0.f, 0.f), glm::vec3(.5f));
 
+    float yaw_mod = 0.f;
+    float pitch_mod = 0.f;
+
+
     /* Loop until the user closes the window */
     while (!glfwWindowShouldClose(window))
     {
         /* Render here */
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
         currentFrame = glfwGetTime();
         deltaTime = currentFrame - lastFrame;
         lastFrame = currentFrame;
@@ -262,15 +282,16 @@ int main() {
         else pCurrentCamera = pOrthoCamera;
         // temp stuff
         if (pCurrentCamera == pPerspectiveCamera) {
-            ortho_x_mod = 0.f;
-            ortho_y_mod = 0.f;
             if (!bZoom) {
+                ortho_x_mod = 0.f;
+                ortho_y_mod = 0.f;
+                pPerspectiveCamera->setFOV(60.f);
                 pPerspectiveCamera->setZoom(-750.f);
                 if (pPerspectiveCamera->getPitch() >= -45.0f && pPerspectiveCamera->getPitch() <= -10.0f) {
                     //pPerspectiveCamera->rotateAround(pTankBody->getPosition(), glm::vec3(cam_x_mod, cam_y_mod, 0.f) * (float)deltaTime);
                     trueTurretRotation.rotate(glm::vec3(0.f, cam_y_mod, 0.f) * (float)deltaTime);
                 }
-                std::cout << pPerspectiveCamera->getYaw();
+                //std::cout << pPerspectiveCamera->getYaw();
                 pPerspectiveCamera->addPitch(cam_x_mod * (float)deltaTime);
                 pPerspectiveCamera->addYaw(cam_y_mod * (float)deltaTime);   
                 if (pPerspectiveCamera->getPitch() <= -45.0f)
@@ -278,8 +299,7 @@ int main() {
                 if (pPerspectiveCamera->getPitch() >= -10.0f)
                     pPerspectiveCamera->setPitch(-10.0f);
                 pPerspectiveCamera->setCenter(pTankBody->getPosition());
-                pPerspectiveCamera->updatePosition(pTankTurret->getRotationAngles(), pTankBody->getPosition());
-
+                pPerspectiveCamera->updateTP(pTankTurret->getRotationAngles(), pTankBody->getPosition());
                 pTankBody->move(glm::vec3(x_mod * -pTankBody->getTransformation()[0][2] / 0.5, 0, x_mod * pTankBody->getTransformation()[0][0] / 0.5));
                 pTankTurret->setPosition(pTankBody->getPosition());
                 pTankTracks->setPosition(pTankBody->getPosition());
@@ -289,11 +309,41 @@ int main() {
                 pTankTracks->rotate(glm::vec3(0, y_mod, 0));
             }
             else {
-                pPerspectiveCamera->setZoom(50.f);
+                if (qPress) {
+                    if (zoom_mod < 0.f)
+                        zoom_mod = 0.f;
+                    else
+                        zoom_mod -= 500.f * (float)deltaTime;
+                }
+                if (ePress) {
+                    zoom_mod += 500.f * (float)deltaTime;
+                }
+                if (wPress) {
+                    pitch_mod += BASE_SPEED * (float)deltaTime;
+                    if (pitch_mod > 89.0f)
+                        pitch_mod = 89.f;
+                }
+
+                if (sPress) {
+                    pitch_mod -= BASE_SPEED * (float)deltaTime;
+                    if (pitch_mod < -10.f)
+                        pitch_mod = -10.f;
+                }
+
+                if (aPress) {
+                    yaw_mod -= BASE_SPEED * (float)deltaTime;
+                }
+
+                if (dPress) {
+                    yaw_mod += BASE_SPEED * (float)deltaTime;
+                }
+                pPerspectiveCamera->setZoom(50.f + zoom_mod);
+                pPerspectiveCamera->setFOV(90.f);
+                pPerspectiveCamera->updateFP(pTankTurret->getRotationAngles(), glm::vec3(pTankBody->getPosition().x, pTankBody->getPosition().y + 175.f, pTankBody->getPosition().z));
+                pPerspectiveCamera->setPitch(pitch_mod);
+                pPerspectiveCamera->setYaw(yaw_mod);
+                
             }
-        }
-        else {
-            
         }
 
         if (wPress) {
@@ -318,17 +368,13 @@ int main() {
             pOrthoCamera->setCenter(glm::vec3(pTankBody->getPosition().x - ortho_x_mod, pTankBody->getPosition().y, pTankBody->getPosition().z + ortho_y_mod));
         }
 
-        
-
-
-        std::cout << std::endl;
-        std::cout << std::endl;
-
-
         sensitivity = 0.f;
 
         CSkyboxShaders.use();
-
+        if (bZoom)
+            CSkyboxShaders.setFloatVec3("viewColor", glm::vec3(0.f, 0.2f, 0.f));
+        else
+            CSkyboxShaders.setFloatVec3("viewColor", glm::vec3(0.f));
         glm::mat4 skyView = glm::mat4(1.f);
         skyView = glm::mat4(glm::mat3(pPerspectiveCamera->getViewMatrix()));
 
@@ -341,7 +387,10 @@ int main() {
         glDepthFunc(GL_LESS);
 
         CShaders.use();
-
+        if (bZoom)
+            CShaders.setFloatVec3("viewColor", glm::vec3(0.f, 0.2f, 0.f));
+        else
+            CShaders.setFloatVec3("viewColor", glm::vec3(0.f));
         CShaders.setFloatVec3("cameraPos", pCurrentCamera->getPosition());
         CShaders.setFloatMat4("view", pCurrentCamera->getViewMatrix());
         CShaders.setFloatMat4("projection", pCurrentCamera->getProjection());
@@ -353,6 +402,8 @@ int main() {
         CShaders.setFloat("specStr", pDirectionLight->getSpecStrength());
         CShaders.setFloat("specPhong", pDirectionLight->getSpecPhong());
 
+
+        CShaders.setFloatVec3("objColor", glm::vec3(0.f, 255.f, 0.f));
         pTankBody->draw(CShaders);
         pTankTurret->draw(CShaders);
         pTankTracks->draw(CShaders);

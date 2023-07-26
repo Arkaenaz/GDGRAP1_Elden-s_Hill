@@ -23,15 +23,18 @@ namespace cameras {
 			~PerspectiveCamera();
 
 		public:
-			void updatePosition(glm::vec3 vecRotate, glm::vec3 vecPoint);
+			void updateTP(glm::vec3 vecRotate, glm::vec3 vecPoint);
+			void updateFP(glm::vec3 vecRotate, glm::vec3 vecPoint);
 		public:
 			void addYaw(float fYaw);
 			void addPitch(float fPitch);
 			float getYaw();
+			void setYaw(float fYaw);
 			float getPitch();
 			void setPitch(float fPitch);
 			glm::mat4 getProjection();
 			void setZoom(float fZoom);
+			void setFOV(float fFOV);
 	};
 }
 
