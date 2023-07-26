@@ -188,7 +188,7 @@ int main() {
 
     DirectionLight* pDirectionLight = new DirectionLight(glm::vec3(4, 11, -3), glm::vec3(1, 1, 1), 1.f, glm::vec3(1, 1, 1), 0.5f, 16);
 
-    Octopus* pOctopus = new Octopus("3D/octopus_toy.obj", glm::vec3(0.0f, -300.f, 0.f), glm::vec3(100.f));
+    Model3D* pOctopus = new Octopus("3D/octopus_toy.obj", glm::vec3(0.0f, -300.f, 0.f), glm::vec3(100.f));
     pOctopus->addTexture("3D/octopus_toy_texture.png");
 
 
@@ -259,12 +259,12 @@ int main() {
                     //pPerspectiveCamera->rotateAround(pTankBody->getPosition(), glm::vec3(cam_x_mod, cam_y_mod, 0.f) * (float)deltaTime);
                 //}
                 std::cout << pPerspectiveCamera->getPitch();
-                    if (pPerspectiveCamera->getPitch() < -45.0f)
-                        pPerspectiveCamera->setPitch(-30.0f);
-                    if (pPerspectiveCamera->getPitch() > 0.0f)
-                        pPerspectiveCamera->setPitch(0.0f);
                         pPerspectiveCamera->addPitch(cam_x_mod * (float)deltaTime);
                         pPerspectiveCamera->addYaw(cam_y_mod * (float)deltaTime);   
+                    if (pPerspectiveCamera->getPitch() <= -45.0f)
+                        pPerspectiveCamera->setPitch(-45.0f);
+                    if (pPerspectiveCamera->getPitch() >= 0.0f)
+                        pPerspectiveCamera->setPitch(0.0f);
                     trueTurretRotation.rotate(glm::vec3(0.f, cam_y_mod, 0.f) * (float)deltaTime);
             }
             else {}

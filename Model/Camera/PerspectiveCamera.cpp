@@ -28,7 +28,7 @@ void PerspectiveCamera::updatePosition(glm::vec3 vecRotate, glm::vec3 vecPoint) 
 	direction.y = sin(glm::radians(this->fPitch));
 	direction.z = sin(glm::radians(this->fYaw)) * cos(glm::radians(this->fPitch));
 
-	this->vecCenter = this->vecPosition + glm::normalize(direction);
+	//this->vecCenter = this->vecPosition + glm::normalize(direction);
 }
 
 void PerspectiveCamera::addYaw(float fYaw) {

@@ -48,7 +48,7 @@ namespace models {
 			Model3D(glm::vec3 vecPosition = glm::vec3(0.f), glm::vec3 vecScale = glm::vec3(1.f));
 
 		protected:
-			virtual void loadModel(const char* objectPath) = 0;
+			virtual void loadModel(const char* objectPath);
 			virtual void setupVAO();
 			virtual void setShaderValues(Shaders& CShaders);
 
