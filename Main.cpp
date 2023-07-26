@@ -183,8 +183,8 @@ int main() {
     pTankTracks->addTexture("3D/T-34/T-34/tex/T-34_Tracks_norm.jpg");
     
     PerspectiveCamera* pPerspectiveCamera = new PerspectiveCamera(glm::vec3(0.f,  105.f, -800.f), glm::vec3(0.f, 3.0f, 0.f), glm::normalize(glm::vec3(0.f, 1.0f, 0.f)), 60.0f, 3000.0f);
-    OrthoCamera* pOrthoCamera = new OrthoCamera(glm::vec3(1.f, 90.f, 1.f), glm::vec3(0.f, 3.0f, 0.f), glm::normalize(glm::vec3(0.f, 1.0f, 0.0f)), glm::vec3(-1920.0f, -1080.0f, -1000.f), glm::vec3(1920.0f, 1080.0f, 1000.f));
-    Camera* pCurrentCamera = pOrthoCamera;
+    OrthoCamera* pOrthoCamera = new OrthoCamera(glm::vec3(1.f, -90.f, 1.f), glm::vec3(0.f, 3.0f, 0.f), glm::normalize(glm::vec3(0.f, 1.0f, 0.0f)), glm::vec3(-1920.0f, -1080.0f, -1000.f), glm::vec3(1920.0f, 1080.0f, 1000.f));
+    Camera* pCurrentCamera = pPerspectiveCamera;
 
     DirectionLight* pDirectionLight = new DirectionLight(glm::vec3(4, 11, -3), glm::vec3(1, 1, 1), 1.f, glm::vec3(1, 1, 1), 0.5f, 16);
 
@@ -224,14 +224,14 @@ int main() {
  
         }
         else if(!wPress && x_mod > 0){
-            x_mod -= 0.6f * (float)deltaTime;
+            x_mod -= 1.f * (float)deltaTime;
         }
 
         if(sPress && x_mod - 0.3f * (float)deltaTime > -MAX_SPEED) {
-            x_mod -= 0.3f * (float)deltaTime;
+            x_mod -= 0.2f * (float)deltaTime;
         }
         else if(!sPress && x_mod < 0) {
-            x_mod += 0.6f * (float)deltaTime;
+            x_mod += 1.f * (float)deltaTime;
         }
 
         if(aPress && y_mod + 0.1f * (float)deltaTime < MAX_SPEED) {
@@ -255,23 +255,25 @@ int main() {
         if (pCurrentCamera == pPerspectiveCamera) {
             if (!bZoom) {
                 pPerspectiveCamera->setZoom(-750.f);
-                if (pPerspectiveCamera->checkRotateAround(pTankBody->getPosition(), glm::vec3(cam_x_mod, cam_y_mod, 0.f) * (float)deltaTime).y <= 490 &&
-                    pPerspectiveCamera->checkRotateAround(pTankBody->getPosition(), glm::vec3(cam_x_mod, cam_y_mod, 0.f) * (float)deltaTime).y >= 100) {
+                if (pPerspectiveCamera->getPitch() >= -45.0f && pPerspectiveCamera->getPitch() <= -10.0f) {
                     //pPerspectiveCamera->rotateAround(pTankBody->getPosition(), glm::vec3(cam_x_mod, cam_y_mod, 0.f) * (float)deltaTime);
                     trueTurretRotation.rotate(glm::vec3(0.f, cam_y_mod, 0.f) * (float)deltaTime);
                 }
-                std::cout << pPerspectiveCamera->getPitch();
+                std::cout << pPerspectiveCamera->getYaw();
                 pPerspectiveCamera->addPitch(cam_x_mod * (float)deltaTime);
                 pPerspectiveCamera->addYaw(cam_y_mod * (float)deltaTime);   
                 if (pPerspectiveCamera->getPitch() <= -45.0f)
                     pPerspectiveCamera->setPitch(-45.0f);
-                if (pPerspectiveCamera->getPitch() >= 0.0f)
-                    pPerspectiveCamera->setPitch(0.0f);
+                if (pPerspectiveCamera->getPitch() >= -10.0f)
+                    pPerspectiveCamera->setPitch(-10.0f);
                 pPerspectiveCamera->setCenter(pTankBody->getPosition());
             }
             else {
                 pPerspectiveCamera->setZoom(50.f);
             }
+        }
+        else {
+            
         }
 
         pOrthoCamera->setPosition(glm::vec3(pTankBody->getPosition().x, 90.f, pTankBody->getPosition().z + 1.f));

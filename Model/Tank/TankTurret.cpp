@@ -24,7 +24,7 @@ void TankTurret::rotateTurret(TankTurret trueTurretRotation, float deltaTime) {
             turretRotation = -(.5f + turretRotation) - .5f ;
     }
 
-    this->rotate(glm::vec3(0.f, -(trueRotation - turretRotation) * 300, 0.f) * deltaTime);
+    this->rotate(glm::vec3(0.f, -(trueRotation - turretRotation) * 2000, 0.f) * deltaTime);
 }
 
 void TankTurret::moveTurret(glm::vec3 vecPos) {

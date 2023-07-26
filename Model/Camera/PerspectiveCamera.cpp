@@ -6,6 +6,7 @@ PerspectiveCamera::PerspectiveCamera(glm::vec3 vecPosition, glm::vec3 vecCenter,
 	Camera(vecPosition, vecCenter, worldUp) {
 	this->fFOV = fFOV;
 	this->fZFar = fZFar;
+	this->fYaw = 180;
 }
 
 PerspectiveCamera::~PerspectiveCamera() {}
