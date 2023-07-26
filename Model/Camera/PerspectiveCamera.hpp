@@ -31,6 +31,7 @@ namespace cameras {
 			float getPitch();
 			void setPitch(float fPitch);
 			glm::mat4 getProjection();
+			void setZoom(float fZoom);
 	};
 }
 

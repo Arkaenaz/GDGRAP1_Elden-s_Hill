@@ -254,26 +254,28 @@ int main() {
         // temp stuff
         if (pCurrentCamera == pPerspectiveCamera) {
             if (!bZoom) {
+                pPerspectiveCamera->setZoom(-750.f);
                 if (pPerspectiveCamera->checkRotateAround(pTankBody->getPosition(), glm::vec3(cam_x_mod, cam_y_mod, 0.f) * (float)deltaTime).y <= 490 &&
                     pPerspectiveCamera->checkRotateAround(pTankBody->getPosition(), glm::vec3(cam_x_mod, cam_y_mod, 0.f) * (float)deltaTime).y >= 100) {
                     //pPerspectiveCamera->rotateAround(pTankBody->getPosition(), glm::vec3(cam_x_mod, cam_y_mod, 0.f) * (float)deltaTime);
                     trueTurretRotation.rotate(glm::vec3(0.f, cam_y_mod, 0.f) * (float)deltaTime);
                 }
                 std::cout << pPerspectiveCamera->getPitch();
-                        pPerspectiveCamera->addPitch(cam_x_mod * (float)deltaTime);
-                        pPerspectiveCamera->addYaw(cam_y_mod * (float)deltaTime);   
-                    if (pPerspectiveCamera->getPitch() <= -45.0f)
-                        pPerspectiveCamera->setPitch(-45.0f);
-                    if (pPerspectiveCamera->getPitch() >= 0.0f)
-                        pPerspectiveCamera->setPitch(0.0f);
+                pPerspectiveCamera->addPitch(cam_x_mod * (float)deltaTime);
+                pPerspectiveCamera->addYaw(cam_y_mod * (float)deltaTime);   
+                if (pPerspectiveCamera->getPitch() <= -45.0f)
+                    pPerspectiveCamera->setPitch(-45.0f);
+                if (pPerspectiveCamera->getPitch() >= 0.0f)
+                    pPerspectiveCamera->setPitch(0.0f);
+                pPerspectiveCamera->setCenter(pTankBody->getPosition());
             }
-            else {}
-                //pPerspectiveCamera->setPosition(pTankBody->getPosition());
+            else {
+                pPerspectiveCamera->setZoom(50.f);
+            }
         }
 
         pOrthoCamera->setPosition(glm::vec3(pTankBody->getPosition().x, 90.f, pTankBody->getPosition().z + 1.f));
         pOrthoCamera->setCenter(pTankBody->getPosition());
-        pPerspectiveCamera->setCenter(pTankBody->getPosition());
         pPerspectiveCamera->updatePosition(pTankTurret->getRotationAngles(), pTankBody->getPosition());
 
         pTankBody->move(glm::vec3(x_mod * -pTankBody->getTransformation()[0][2] / 0.5,0, x_mod * pTankBody->getTransformation()[0][0] / 0.5));

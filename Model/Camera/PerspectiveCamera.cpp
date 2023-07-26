@@ -54,3 +54,7 @@ void PerspectiveCamera::setPitch(float fPitch) {
 glm::mat4 PerspectiveCamera::getProjection() {
 	return glm::perspective(glm::radians(this->fFOV), SCREEN_WIDTH / SCREEN_HEIGHT, this->fZNear, this->fZFar);
 }
+
+void PerspectiveCamera::setZoom(float fZoom) {
+	this->fZoom = fZoom;
+}
