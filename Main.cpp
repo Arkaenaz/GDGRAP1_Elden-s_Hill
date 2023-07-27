@@ -299,7 +299,7 @@ int main() {
                 if (pPerspectiveCamera->getPitch() >= -10.0f)
                     pPerspectiveCamera->setPitch(-10.0f);
                 pPerspectiveCamera->setCenter(pTankBody->getPosition());
-                pPerspectiveCamera->updateTP(pTankTurret->getRotationAngles(), pTankBody->getPosition());
+                pPerspectiveCamera->updateTP(pTankBody->getRotationAngles(), pTankBody->getPosition());
                 pTankBody->move(glm::vec3(x_mod * -pTankBody->getTransformation()[0][2] / 0.5, 0, x_mod * pTankBody->getTransformation()[0][0] / 0.5));
                 pTankTurret->setPosition(pTankBody->getPosition());
                 pTankTracks->setPosition(pTankBody->getPosition());
@@ -339,7 +339,7 @@ int main() {
                 }
                 pPerspectiveCamera->setZoom(50.f + zoom_mod);
                 pPerspectiveCamera->setFOV(90.f);
-                pPerspectiveCamera->updateFP(pTankTurret->getRotationAngles(), glm::vec3(pTankBody->getPosition().x, pTankBody->getPosition().y + 175.f, pTankBody->getPosition().z));
+                pPerspectiveCamera->updateFP(pTankBody->getRotationAngles(), glm::vec3(pTankBody->getPosition().x, pTankBody->getPosition().y + 175.f, pTankBody->getPosition().z));
                 pPerspectiveCamera->setPitch(pitch_mod);
                 pPerspectiveCamera->setYaw(yaw_mod);
                 
