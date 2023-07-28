@@ -161,13 +161,13 @@ void Model3D::setupVAO() {
     GLintptr normPtr = 3 * sizeof(float);
     glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, this->nVertexValues * sizeof(float), (void*)normPtr);
 
-    GLintptr uvPtr = 3 * sizeof(float);
+    GLintptr uvPtr = 6 * sizeof(float);
     glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, this->nVertexValues * sizeof(float), (void*)uvPtr);
 
-    GLintptr tangentPtr = 5 * sizeof(float);
+    GLintptr tangentPtr = 8 * sizeof(float);
     glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, this->nVertexValues * sizeof(float), (void*)tangentPtr);
 
-    GLintptr bitangentPtr = 8 * sizeof(float);
+    GLintptr bitangentPtr = 11 * sizeof(float);
     glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, this->nVertexValues * sizeof(float), (void*)bitangentPtr);
 
     glEnableVertexAttribArray(0);
@@ -189,7 +189,7 @@ void Model3D::setShaderValues(Shaders& CShaders) {
 
     glActiveTexture(GL_TEXTURE1);
     glBindTexture(GL_TEXTURE_2D, this->getTexture(1));
-    CShaders.setInt("norm_tex", 0);
+    CShaders.setInt("norm_tex", 1);
 
     CShaders.setFloatVec3("objColor", this->getColor());
 }
