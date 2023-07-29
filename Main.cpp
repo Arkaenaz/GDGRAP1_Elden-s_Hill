@@ -25,6 +25,8 @@
 
 #include "Model/Camera.hpp"
 
+#include "Model/Plane/Plane.hpp"
+
 #include "Model/Camera/OrthoCamera.hpp"
 #include "Model/Camera/PerspectiveCamera.hpp"
 
@@ -39,7 +41,7 @@ using namespace models;
 using namespace cameras;
 using namespace lights;
 
-const float MAX_SPEED = 10.0f;
+const float MAX_SPEED = .5f;
 
 float x_mod = 0;
 float y_mod = 0;
@@ -207,11 +209,15 @@ int main() {
     OrthoCamera* pOrthoCamera = new OrthoCamera(glm::vec3(0.f, -90.f, -1.f), glm::vec3(0.f, 3.0f, 0.f), glm::normalize(glm::vec3(0.f, 1.0f, 0.0f)), glm::vec3(-1920.0f, -1080.0f, -1000.f), glm::vec3(1920.0f, 1080.0f, 1000.f));
     Camera* pCurrentCamera = pPerspectiveCamera;
 
-    DirectionLight* pMoonLight = new DirectionLight(glm::vec3(4, 500, -3), glm::vec3(80.f / 255.f, 104.f / 255.f, 134.f / 255.f), 1.f, glm::vec3(1, 1, 1), 0.5f, 16);
+    DirectionLight* pMoonLight = new DirectionLight(glm::vec3(4, 100, -3), glm::vec3(80.f / 255.f, 104.f / 255.f, 134.f / 255.f), 1.f, glm::vec3(1, 1, 1), 1.f, 160);
 
-    Model3D* pOctopus = new Octopus("3D/octopus_toy.obj", glm::vec3(0.0f, -300.f, 0.f), glm::vec3(100.f));
+    Model3D* pOctopus = new Octopus("3D/octopus_toy.obj", glm::vec3(100.0f, 0.f, 0.f), glm::vec3(100.f));
     pOctopus->addTexture("3D/octopus_toy_texture.png");
 
+    Model3D *pPlane = new Plane("3D/plane.obj", glm::vec3(0.0f, 0.f, 0.f), glm::vec3(100.f));
+    pPlane->rotate(glm::vec3(90,0,0));
+    pPlane->scale(glm::vec3(100000.f,100000,100000));
+    pPlane->addTexture("3D/grass.jpg");
 
 
 
@@ -237,7 +243,7 @@ int main() {
         glDepthMask(GL_FALSE);
         glDepthFunc(GL_LEQUAL);
 
-        
+        std::cout << x_mod << std::endl;
         
         float cam_y_mod = -(currentmousexpos - xoldpos) * sensitivity;
         float cam_x_mod = -(currentmouseypos - yoldpos) * sensitivity;
@@ -397,7 +403,7 @@ int main() {
         CShaders.setFloatVec3("ambientColor", pMoonLight->getAmbientColor());
         CShaders.setFloat("specStr", pMoonLight->getSpecStrength());
         CShaders.setFloat("specPhong", pMoonLight->getSpecPhong());
-        CShaders.setFloat("intensity", 0.1f);
+        CShaders.setFloat("intensity", pMoonLight->getIntensity());
 
 
         if (bZoom) {
@@ -411,6 +417,7 @@ int main() {
         pTankTurret->draw(CShaders);
         pTankTracks->draw(CShaders);
         pOctopus->draw(CShaders);
+        pPlane->draw(CShaders);
 
         /* Swap front and back buffers */
         glfwSwapBuffers(window);

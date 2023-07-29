@@ -9,7 +9,7 @@ Light::Light(glm::vec3 vecPosition, glm::vec3 vecColor, float fAmbientStrength, 
 	this->vecAmbientColor = vecAmbientColor;
 	this->fSpecStrength = fSpecStrength;
 	this->fSpecPhong = fSpecPhong;
-	this->fIntensity = 0.f;
+	this->fIntensity = 1.f;
 }
 
 Light::~Light() {}
