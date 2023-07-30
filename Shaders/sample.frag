@@ -45,7 +45,7 @@ void main() {
 	vec3 viewDir = normalize(cameraPos - fragPos);
 	vec3 reflectDir = reflect(-lightDir, normal);
 
-	float spec = pow(max(dot(reflectDir, viewDir), 0.1), specPhong);
+	float spec = pow(max(dot(reflectDir, viewDir), 0.4), specPhong);
 	vec3 specColor = spec * specStr * lightColor;
 
 	vec3 result = specColor + diffuse + ambientCol;
