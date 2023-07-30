@@ -146,7 +146,7 @@ void Model3D::addTexture(const char* texturePath) {
 
 
 void Model3D::setupVAO() {
-    this->nVertexValues = 14;
+    //this->nVertexValues = 14;
     GLuint VBO;
 
     glGenVertexArrays(1, &this->VAO);
