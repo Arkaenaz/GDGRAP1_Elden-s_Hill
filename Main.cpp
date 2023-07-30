@@ -226,6 +226,12 @@ int main() {
     //pPlane->scale(glm::vec3(10,10,10));
     pPlane->addTexture("3D/grass.jpg");
 
+    Model3D *Fridge = new Plane("3D/POIs/Fridge/Fridge.obj", glm::vec3(0.0f, 0.f, 0.f), glm::vec3(100.f));
+    Fridge->addTexture("3D/POIs/Fridge/Fridge.jpg");
+    Fridge->addTexture("3D/POIs/Fridge/Fridge1.jpg");
+    Fridge->scale(glm::vec3(-95, -95, -95));
+    
+
     /*float cam_y_mod;
     float cam_x_mod;
     float cam_z_mod = 0.f;*/
@@ -454,6 +460,7 @@ int main() {
         pTankTracks->draw(CShaders);
         //pOctopus->draw(CShaders);
         pPlane->draw(CShaders);
+        Fridge->draw(CShaders);
 
         /* Swap front and back buffers */
         glfwSwapBuffers(window);
