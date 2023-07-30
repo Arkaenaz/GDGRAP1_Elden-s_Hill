@@ -30,6 +30,20 @@ void Light::setPosition(glm::vec3 vecPosition) {
 	this->vecPosition = vecPosition;
 }
 
+void Light::move(glm::vec3 vecMove) {
+	this->vecPosition += vecMove;
+}
+
+void Light::rotateAround(glm::vec3 vecPoint, glm::vec3 vecRotate) {
+	glm::mat4 translate = glm::translate(glm::mat4(1.0f), vecPoint);
+	glm::quat quatRotate = glm::quat(cos(glm::radians(vecRotate.z) / 2), glm::vec3(0.f, 0.f, (sin(glm::radians(vecRotate.z) / 2))));
+	quatRotate *= glm::quat(cos(glm::radians(vecRotate.y) / 2), glm::vec3(0.f, (sin(glm::radians(vecRotate.y) / 2)), 0.f));
+	quatRotate *= glm::quat(cos(glm::radians(vecRotate.x) / 2), glm::vec3((sin(glm::radians(vecRotate.x) / 2)), 0.f, 0.f));
+	glm::mat4 inverse = glm::inverse(translate);
+	glm::mat4 matrix = translate * glm::toMat4(quatRotate) * glm::inverse(translate);
+	this->vecPosition = matrix * glm::vec4(this->vecPosition, 1.0f);
+}
+
 glm::vec3 Light::getColor() {
 	return this->vecColor;
 }

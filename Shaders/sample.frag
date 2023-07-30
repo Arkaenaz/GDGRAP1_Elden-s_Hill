@@ -3,14 +3,22 @@
 uniform sampler2D tex0;
 uniform sampler2D norm_tex;
 
-uniform vec3 lightPos;
-uniform vec3 lightColor;
-uniform float ambientStr;
-uniform vec3 ambientColor;
-uniform float specStr;
-uniform float specPhong;
+uniform vec3 pointLightPos;
+uniform vec3 pointLightColor;
+uniform float pointAmbientStr;
+uniform vec3 pointAmbientColor;
+uniform float pointSpecStr;
+uniform float pointSpecPhong;
 
-uniform float intensity;
+uniform vec3 dirLightPos;
+uniform vec3 dirLightColor;
+uniform float dirAmbientStr;
+uniform vec3 dirAmbientColor;
+uniform float dirSpecStr;
+uniform float dirSpecPhong;
+
+uniform float pointIntensity;
+uniform float dirIntensity;
 
 uniform vec3 cameraPos;
 
@@ -35,21 +43,48 @@ void main() {
 	normal = normalize(normal * 2.0 - 1.0);
 
 	normal = normalize(TBN * normal);
-	vec3 lightDir = normalize(-lightPos);
 
-	float diff = max(dot(normal, lightDir), 0.0);
-	vec3 diffuse = diff * lightColor;
+	// Point Light
+    vec3 lightDir = normalize(pointLightPos - fragPos);
 
-	vec3 ambientCol = ambientColor * ambientStr;
+	float diff = max(dot(normal, lightDir), 1.0);
+	vec3 diffuse = diff * pointLightColor;
+
+	vec3 ambientCol = pointAmbientColor * pointAmbientStr;
 
 	vec3 viewDir = normalize(cameraPos - fragPos);
 	vec3 reflectDir = reflect(-lightDir, normal);
 
-	float spec = pow(max(dot(reflectDir, viewDir), 0.4), specPhong);
-	vec3 specColor = spec * specStr * lightColor;
+	float spec = pow(max(dot(reflectDir, viewDir), 0.1), pointSpecPhong);
+	vec3 specColor = spec * pointSpecStr * pointLightColor;
 
-	vec3 result = specColor + diffuse + ambientCol;
-	result *= intensity;
+	float distance = pow(pointLightPos.x - fragPos.x, 2) + pow(pointLightPos.y - fragPos.y, 2) + pow(pointLightPos.z - fragPos.z, 2);
 
-	FragColor = vec4(result, 1.0) * texture(tex0, texCoord) + vec4(objColor, 1.0) + vec4(viewColor, 1.0);
+	float intensity = 1.f / distance;
+
+	specColor  *= intensity;
+    diffuse  *= intensity;
+    ambientCol *= intensity;
+
+	vec3 pointResult = specColor + diffuse + ambientCol;
+	pointResult *= pointIntensity;
+
+	// Direction Light
+	lightDir = normalize(-dirLightPos);
+
+	diff = max(dot(normal, lightDir), 0.0);
+	diffuse = diff * dirLightColor;
+
+	ambientCol = dirAmbientColor * dirAmbientStr;
+
+	viewDir = normalize(cameraPos - fragPos);
+	reflectDir = reflect(-lightDir, normal);
+
+	spec = pow(max(dot(reflectDir, viewDir), 0.4), dirSpecPhong);
+	specColor = spec * dirSpecStr * dirLightColor;
+
+	vec3 dirResult = specColor + diffuse + ambientCol;
+	dirResult *= dirIntensity;
+
+	FragColor = vec4(pointResult + dirResult, 1.0) * texture(tex0, texCoord) + vec4(objColor, 1.0) + vec4(viewColor, 1.0);
 }

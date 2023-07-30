@@ -208,18 +208,17 @@ int main() {
     PerspectiveCamera* pPerspectiveCamera = new PerspectiveCamera(glm::vec3(0.f,  105.f, -800.f), glm::vec3(0.f, 3.0f, 0.f), glm::normalize(glm::vec3(0.f, 1.0f, 0.f)), 60.0f, 2500.f);
     OrthoCamera* pOrthoCamera = new OrthoCamera(glm::vec3(0.f, -90.f, -1.f), glm::vec3(0.f, 3.0f, 0.f), glm::normalize(glm::vec3(0.f, 1.0f, 0.0f)), glm::vec3(-1920.0f, -1080.0f, -1000.f), glm::vec3(1920.0f, 1080.0f, 1000.f));
     Camera* pCurrentCamera = pPerspectiveCamera;
+    
+    PointLight* pPointLight = new PointLight(glm::vec3(pTankBody->getPosition().x, pTankBody->getPosition().y + 30.f, pTankBody->getPosition().z + 100.f), glm::vec3(1, 1, 1), 0.1f, glm::vec3(1, 1, 1), 0.5f, 16);
+    DirectionLight* pMoonLight = new DirectionLight(glm::vec3(0, -1000, 500), glm::vec3(80.f / 255.f, 104.f / 255.f, 134.f / 255.f), 0.5f, glm::vec3(80.f / 255.f, 104.f / 255.f, 134.f / 255.f), 3.f, 16);
 
-    DirectionLight* pMoonLight = new DirectionLight(glm::vec3(4, 1000, -3), glm::vec3(80.f / 255.f, 104.f / 255.f, 134.f / 255.f), 0.5f, glm::vec3(1, 1, 1), 3.f, 160);
-
-    Model3D* pOctopus = new Octopus("3D/octopus_toy.obj", glm::vec3(100.0f, 0.f, 0.f), glm::vec3(100.f));
+    Model3D* pOctopus = new Octopus("3D/octopus_toy.obj", glm::vec3(100.0f, 0.f, 0.f), glm::vec3(50.f));
     pOctopus->addTexture("3D/octopus_toy_texture.png");
 
     Model3D *pPlane = new Plane("3D/plane.obj", glm::vec3(0.0f, 0.f, 0.f), glm::vec3(100.f));
     pPlane->rotate(glm::vec3(90,0,0));
     //pPlane->scale(glm::vec3(10,10,10));
     pPlane->addTexture("3D/grass.jpg");
-
-
 
     /*float cam_y_mod;
     float cam_x_mod;
@@ -312,11 +311,15 @@ int main() {
                 }
                 pPerspectiveCamera->setCenter(pTankBody->getPosition());
                 pPerspectiveCamera->updateTP(pTankBody->getRotationAngles(), pTankBody->getPosition());
+                pPointLight->move(glm::vec3(x_mod * -pTankBody->getTransformation()[0][2] / 0.5, 0, x_mod * pTankBody->getTransformation()[0][0] / 0.5));
                 pTankBody->move(glm::vec3(x_mod * -pTankBody->getTransformation()[0][2] / 0.5, 0, x_mod * pTankBody->getTransformation()[0][0] / 0.5));
                 pTankTurret->setPosition(pTankBody->getPosition());
                 pTankTracks->setPosition(pTankBody->getPosition());
 
                 pTankTurret->rotateTurret(trueTurretRotation, deltaTime);
+
+               // pPointLight->setPosition(glm::vec3(pTankBody->getTransformation()[0][3], pTankBody->getTransformation()[1][3], pTankBody->getTransformation()[2][3]));
+                pPointLight->rotateAround(pTankBody->getPosition(), glm::vec3(0, y_mod, 0));
                 pTankBody->rotate(glm::vec3(0, y_mod, 0));
                 pTankTracks->rotate(glm::vec3(0, y_mod, 0));
             }
@@ -363,7 +366,8 @@ int main() {
                 
             }
         }
-
+        //pPointLight->setPosition(glm::vec3(pTankBody->getPosition().x, pTankBody->getPosition().y + 30.f, pTankBody->getPosition().z + 100.f));
+        //pPointLight->rotateAround(pTankBody->getPosition(), pTankBody->getRotationAngles());
         if (wPress) {
             ortho_y_mod += BASE_SPEED * (float)deltaTime;
         }
@@ -409,13 +413,21 @@ int main() {
         CShaders.setFloatMat4("view", pCurrentCamera->getViewMatrix());
         CShaders.setFloatMat4("projection", pCurrentCamera->getProjection());
 
-        CShaders.setFloatVec3("lightPos", pMoonLight->getPosition());
-        CShaders.setFloatVec3("lightColor", pMoonLight->getColor());
-        CShaders.setFloat("ambientStr", pMoonLight->getAmbientStrength());
-        CShaders.setFloatVec3("ambientColor", pMoonLight->getAmbientColor());
-        CShaders.setFloat("specStr", pMoonLight->getSpecStrength());
-        CShaders.setFloat("specPhong", pMoonLight->getSpecPhong());
-        CShaders.setFloat("intensity", pMoonLight->getIntensity());
+        CShaders.setFloatVec3("pointLightPos", pPointLight->getPosition());
+        CShaders.setFloatVec3("pointLightPosLightColor", pPointLight->getColor());
+        CShaders.setFloat("pointAmbientStr", pPointLight->getAmbientStrength());
+        CShaders.setFloatVec3("pointAmbientColor", pPointLight->getAmbientColor());
+        CShaders.setFloat("pointSpecStr", pPointLight->getSpecStrength());
+        CShaders.setFloat("pointSpecPhong", pPointLight->getSpecPhong());
+        CShaders.setFloat("pointIntensity", 40000.f);
+
+        CShaders.setFloatVec3("dirLightPos", pMoonLight->getPosition());
+        CShaders.setFloatVec3("dirLightColor", pMoonLight->getColor());
+        CShaders.setFloat("dirAmbientStr", pMoonLight->getAmbientStrength());
+        CShaders.setFloatVec3("dirAmbientColor", pMoonLight->getAmbientColor());
+        CShaders.setFloat("dirSpecStr", pMoonLight->getSpecStrength());
+        CShaders.setFloat("dirSpecPhong", pMoonLight->getSpecPhong());
+        CShaders.setFloat("dirIntensity", pMoonLight->getIntensity());
 
 
         if (bZoom) {
@@ -428,7 +440,7 @@ int main() {
         pTankBody->draw(CShaders);
         pTankTurret->draw(CShaders);
         pTankTracks->draw(CShaders);
-        pOctopus->draw(CShaders);
+        //pOctopus->draw(CShaders);
         pPlane->draw(CShaders);
 
         /* Swap front and back buffers */
