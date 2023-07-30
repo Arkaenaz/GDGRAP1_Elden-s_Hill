@@ -71,3 +71,7 @@ float Light::getSpecPhong() {
 float Light::getIntensity() {
 	return this->fIntensity;
 }
+
+void Light::setIntensity(float fIntensity) {
+	this->fIntensity = fIntensity;
+}

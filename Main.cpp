@@ -61,6 +61,8 @@ bool qPress;
 bool bCamera = true;
 bool bZoom = false;
 
+int intensityState = 0;
+
 double xoldpos = 0.f;
 double yoldpos = 0.f;
 double currentmousexpos = 0.f;
@@ -105,6 +107,10 @@ void Key_Callback(
             break;
         case GLFW_KEY_Q:
             qPress = true;
+            break;
+        case GLFW_KEY_F:
+            intensityState += 1;
+            intensityState = intensityState % 3;
             break;
         case GLFW_KEY_1:
             if (bCamera)
@@ -209,7 +215,7 @@ int main() {
     OrthoCamera* pOrthoCamera = new OrthoCamera(glm::vec3(0.f, -90.f, -1.f), glm::vec3(0.f, 3.0f, 0.f), glm::normalize(glm::vec3(0.f, 1.0f, 0.0f)), glm::vec3(-1920.0f, -1080.0f, -1000.f), glm::vec3(1920.0f, 1080.0f, 1000.f));
     Camera* pCurrentCamera = pPerspectiveCamera;
     
-    PointLight* pPointLight = new PointLight(glm::vec3(pTankBody->getPosition().x, pTankBody->getPosition().y + 30.f, pTankBody->getPosition().z + 100.f), glm::vec3(1, 1, 1), 0.1f, glm::vec3(1, 1, 1), 0.5f, 16);
+    PointLight* pPointLight = new PointLight(glm::vec3(pTankBody->getPosition().x, pTankBody->getPosition().y + 30.f, pTankBody->getPosition().z + 150.f), glm::vec3(1, 1, 1), 0.1f, glm::vec3(1, 1, 1), 0.5f, 16);
     DirectionLight* pMoonLight = new DirectionLight(glm::vec3(0, -1000, 500), glm::vec3(80.f / 255.f, 104.f / 255.f, 134.f / 255.f), 0.5f, glm::vec3(80.f / 255.f, 104.f / 255.f, 134.f / 255.f), 3.f, 16);
 
     Model3D* pOctopus = new Octopus("3D/octopus_toy.obj", glm::vec3(100.0f, 0.f, 0.f), glm::vec3(50.f));
@@ -389,7 +395,13 @@ int main() {
             pOrthoCamera->setPosition(glm::vec3(pTankBody->getPosition().x - ortho_x_mod, 90.f, pTankBody->getPosition().z - 1.f + ortho_y_mod));
             pOrthoCamera->setCenter(glm::vec3(pTankBody->getPosition().x - ortho_x_mod, pTankBody->getPosition().y, pTankBody->getPosition().z + ortho_y_mod));
         }
-
+        std::cout << "Intensity State :" << intensityState << std::endl;
+        if (intensityState == 0)
+            pPointLight->setIntensity(LOW);
+        else if (intensityState == 1)
+            pPointLight->setIntensity(MEDIUM);
+        else if (intensityState == 2)
+            pPointLight->setIntensity(HIGH);
         sensitivity = 0.f;
 
         CSkyboxShaders.use();
@@ -419,7 +431,7 @@ int main() {
         CShaders.setFloatVec3("pointAmbientColor", pPointLight->getAmbientColor());
         CShaders.setFloat("pointSpecStr", pPointLight->getSpecStrength());
         CShaders.setFloat("pointSpecPhong", pPointLight->getSpecPhong());
-        CShaders.setFloat("pointIntensity", 40000.f);
+        CShaders.setFloat("pointIntensity", pPointLight->getIntensity());
 
         CShaders.setFloatVec3("dirLightPos", pMoonLight->getPosition());
         CShaders.setFloatVec3("dirLightColor", pMoonLight->getColor());

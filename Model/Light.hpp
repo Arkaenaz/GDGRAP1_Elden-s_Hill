@@ -39,6 +39,7 @@ namespace models {
 			float getSpecStrength();
 			float getSpecPhong();
 			float getIntensity();
+			void setIntensity(float fIntensity);
 	};
 }
 
