@@ -1,9 +1,13 @@
 #ifndef MODELS_LIGHT_HPP
 #define MODELS_LIGHT_HPP
 
+
+#include "iostream"
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
+#include <glm/gtc/quaternion.hpp>
+#include <glm/gtx/quaternion.hpp>
 
 namespace models {
 	class Light {
@@ -21,7 +25,9 @@ namespace models {
 			~Light();
 
 		public:
+			void move(glm::vec3 vecMove);
 			void intensify(float fIntensify);
+			void rotateAround(glm::vec3 vecPoint, glm::vec3 vecRotate);
 
 		public:
 			glm::vec3 getPosition();
@@ -33,6 +39,7 @@ namespace models {
 			float getSpecStrength();
 			float getSpecPhong();
 			float getIntensity();
+			void setIntensity(float fIntensity);
 	};
 }
 

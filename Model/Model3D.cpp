@@ -146,7 +146,7 @@ void Model3D::addTexture(const char* texturePath) {
 
 
 void Model3D::setupVAO() {
-    this->nVertexValues = 14;
+    //this->nVertexValues = 14;
     GLuint VBO;
 
     glGenVertexArrays(1, &this->VAO);
@@ -251,14 +251,15 @@ void Model3D::rotate(glm::vec3 vecRotate) {
     @param vecRotate rotation angles
 */
 void Model3D::rotateAround(glm::vec3 vecPoint, glm::vec3 vecRotate) {
-    this->vecRotation = vecRotate;
-    glm::quat quatRotate = glm::quat(cos(glm::radians(this->vecRotation.z) / 2), glm::vec3(0.f, 0.f, (sin(glm::radians(this->vecRotation.z) / 2))));
-    quatRotate *= glm::quat(cos(glm::radians(this->vecRotation.y) / 2), glm::vec3(0.f, (sin(glm::radians(this->vecRotation.y) / 2)), 0.f));
-    quatRotate *= glm::quat(cos(glm::radians(this->vecRotation.x) / 2), glm::vec3((sin(glm::radians(this->vecRotation.x) / 2)), 0.f, 0.f));
-    //this->modelMatrix = glm::toMat4(quatRotate) * this->modelMatrix;
-    this->vecPosition = quatRotate * (this->vecPosition - vecPoint) + vecPoint;
+    glm::mat4 translate = glm::translate(glm::mat4(1.0f), vecPoint);
+    glm::quat quatRotate = glm::quat(cos(glm::radians(vecRotate.z) / 2), glm::vec3(0.f, 0.f, (sin(glm::radians(vecRotate.z) / 2))));
+    quatRotate *= glm::quat(cos(glm::radians(vecRotate.y) / 2), glm::vec3(0.f, (sin(glm::radians(vecRotate.y) / 2)), 0.f));
+    quatRotate *= glm::quat(cos(glm::radians(vecRotate.x) / 2), glm::vec3((sin(glm::radians(vecRotate.x) / 2)), 0.f, 0.f));
+    glm::mat4 inverse = glm::inverse(translate);
+    glm::mat4 matrix = translate * glm::toMat4(quatRotate) * glm::inverse(translate);
+    this->vecPosition = matrix * glm::vec4(this->vecPosition, 1.0f);
+    this->matTranslate = glm::translate(glm::mat4(1.0f), this->vecPosition);
     this->matRotate = glm::toMat4(quatRotate) * this->matRotate;
-    this->matTranslate = glm::translate(glm::mat4(1.0f), glm::vec3(this->vecPosition.x, this->vecPosition.y, this->vecPosition.z));
 }
 
 

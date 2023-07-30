@@ -30,7 +30,7 @@ void PerspectiveCamera::updateFP(glm::vec3 vecRotate, glm::vec3 vecPoint) {
 	float fX = cos(glm::radians(this->fPitch));
 	float fY = sin(glm::radians(this->fPitch));
 
-	float fAngle = this->fYaw;
+	float fAngle = vecRotate.y + this->fYaw;
 	float fXOffset = fX * sin(glm::radians(fAngle));
 	float fZOffset = fX * cos(glm::radians(fAngle));
 
@@ -85,4 +85,8 @@ void PerspectiveCamera::setZoom(float fZoom) {
 
 void PerspectiveCamera::setFOV(float fFOV) {
 	this->fFOV = fFOV;
+}
+
+void PerspectiveCamera::setFar(float fFar) {
+	this->fZFar = fFar;
 }
