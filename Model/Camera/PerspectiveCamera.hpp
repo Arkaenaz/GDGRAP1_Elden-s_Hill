@@ -35,6 +35,7 @@ namespace cameras {
 			glm::mat4 getProjection();
 			void setZoom(float fZoom);
 			void setFOV(float fFOV);
+			void setFar(float fFar);
 	};
 }
 

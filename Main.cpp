@@ -209,7 +209,7 @@ int main() {
     OrthoCamera* pOrthoCamera = new OrthoCamera(glm::vec3(0.f, -90.f, -1.f), glm::vec3(0.f, 3.0f, 0.f), glm::normalize(glm::vec3(0.f, 1.0f, 0.0f)), glm::vec3(-1920.0f, -1080.0f, -1000.f), glm::vec3(1920.0f, 1080.0f, 1000.f));
     Camera* pCurrentCamera = pPerspectiveCamera;
 
-    DirectionLight* pMoonLight = new DirectionLight(glm::vec3(4, 100, -3), glm::vec3(80.f / 255.f, 104.f / 255.f, 134.f / 255.f), 1.f, glm::vec3(1, 1, 1), 1.f, 160);
+    DirectionLight* pMoonLight = new DirectionLight(glm::vec3(4, 10, -3), glm::vec3(80.f / 255.f, 104.f / 255.f, 134.f / 255.f), 1.f, glm::vec3(1, 1, 1), 1.f, 16);
 
     Model3D* pOctopus = new Octopus("3D/octopus_toy.obj", glm::vec3(100.0f, 0.f, 0.f), glm::vec3(100.f));
     pOctopus->addTexture("3D/octopus_toy_texture.png");
@@ -226,7 +226,7 @@ int main() {
     float cam_z_mod = 0.f;*/
 
     TankTurret trueTurretRotation = TankTurret("3D/T-34/T-34/T-34.obj", glm::vec3(0.0f, 0.f, 0.f), glm::vec3(.5f));
-
+    trueTurretRotation.rotate(glm::vec3(0.f, 180.f, 0.f));
     float yaw_mod = 0.f;
     float pitch_mod = 0.f;
 
@@ -293,17 +293,24 @@ int main() {
                 ortho_y_mod = 0.f;
                 pPerspectiveCamera->setFOV(60.f);
                 pPerspectiveCamera->setZoom(-750.f);
+                pPerspectiveCamera->setFar(2500.f);
                 if (pPerspectiveCamera->getPitch() >= -45.0f && pPerspectiveCamera->getPitch() <= -10.0f) {
                     //pPerspectiveCamera->rotateAround(pTankBody->getPosition(), glm::vec3(cam_x_mod, cam_y_mod, 0.f) * (float)deltaTime);
                     trueTurretRotation.rotate(glm::vec3(0.f, cam_y_mod, 0.f) * (float)deltaTime);
                 }
                 //std::cout << pPerspectiveCamera->getYaw();
-                pPerspectiveCamera->addPitch(cam_x_mod * (float)deltaTime);
-                pPerspectiveCamera->addYaw(cam_y_mod * (float)deltaTime);   
-                if (pPerspectiveCamera->getPitch() <= -45.0f)
-                    pPerspectiveCamera->setPitch(-45.0f);
-                if (pPerspectiveCamera->getPitch() >= -10.0f)
-                    pPerspectiveCamera->setPitch(-10.0f);
+                pitch_mod += cam_x_mod * (float)deltaTime;
+                yaw_mod += cam_y_mod * (float)deltaTime;
+                pPerspectiveCamera->setPitch(pitch_mod);
+                pPerspectiveCamera->setYaw(yaw_mod);
+                if (pPerspectiveCamera->getPitch() <= -45.0f) {
+                    pitch_mod = -44.9f;
+                    pPerspectiveCamera->setPitch(-45.f);
+                }
+                if (pPerspectiveCamera->getPitch() >= -10.0f) {
+                    pitch_mod = -10.1f;
+                    pPerspectiveCamera->setPitch(-10.f);
+                }
                 pPerspectiveCamera->setCenter(pTankBody->getPosition());
                 pPerspectiveCamera->updateTP(pTankBody->getRotationAngles(), pTankBody->getPosition());
                 pTankBody->move(glm::vec3(x_mod * -pTankBody->getTransformation()[0][2] / 0.5, 0, x_mod * pTankBody->getTransformation()[0][0] / 0.5));
@@ -322,18 +329,20 @@ int main() {
                         zoom_mod -= 500.f * (float)deltaTime;
                 }
                 if (ePress) {
-                    zoom_mod += 500.f * (float)deltaTime;
+                    if (zoom_mod > 1850.f)
+                        zoom_mod = 1850.f;
+                    else
+                        zoom_mod += 500.f * (float)deltaTime;
                 }
+                std::cout << "Zoom:" << zoom_mod << std::endl;
                 if (wPress) {
                     pitch_mod += BASE_SPEED * (float)deltaTime;
-                    if (pitch_mod > 89.0f)
-                        pitch_mod = 89.f;
+                    
                 }
 
                 if (sPress) {
                     pitch_mod -= BASE_SPEED * (float)deltaTime;
-                    if (pitch_mod < -10.f)
-                        pitch_mod = -10.f;
+                    
                 }
 
                 if (aPress) {
@@ -343,6 +352,11 @@ int main() {
                 if (dPress) {
                     yaw_mod += BASE_SPEED * (float)deltaTime;
                 }
+                if (pitch_mod > 45.0f)
+                    pitch_mod = 45.f;
+                if (pitch_mod < -5.f)
+                    pitch_mod = -5.f;
+                pPerspectiveCamera->setFar(5000.f);
                 pPerspectiveCamera->setZoom(50.f + zoom_mod);
                 pPerspectiveCamera->setFOV(90.f);
                 pPerspectiveCamera->updateFP(pTankBody->getRotationAngles(), glm::vec3(pTankBody->getPosition().x, pTankBody->getPosition().y + 175.f, pTankBody->getPosition().z));
@@ -403,7 +417,7 @@ int main() {
         CShaders.setFloatVec3("ambientColor", pMoonLight->getAmbientColor());
         CShaders.setFloat("specStr", pMoonLight->getSpecStrength());
         CShaders.setFloat("specPhong", pMoonLight->getSpecPhong());
-        CShaders.setFloat("intensity", pMoonLight->getIntensity());
+        CShaders.setFloat("intensity", 1.0f);
 
 
         if (bZoom) {
