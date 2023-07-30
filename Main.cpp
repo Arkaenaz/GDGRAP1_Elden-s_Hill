@@ -187,12 +187,12 @@ int main() {
     Shaders CShaders = Shaders("Shaders/sample.vert", "Shaders/sample.frag");
     Shaders CSkyboxShaders = Shaders("Shaders/skybox.vert", "Shaders/skybox.frag");
 
-    Skybox* pSkybox = new Skybox("Skybox/px.png",
-                                 "Skybox/nx.png",
-                                 "Skybox/py.png",
-                                 "Skybox/ny.png",
-                                 "Skybox/pz.png",
-                                 "Skybox/nz.png");
+    Skybox* pSkybox = new Skybox("Skybox/night_right.png",
+                                 "Skybox/night_left.png",
+                                 "Skybox/night_up.png",
+                                 "Skybox/night_down.png",
+                                 "Skybox/night_front.png",
+                                 "Skybox/night_back.png");
     
 
     TankBody *pTankBody = new TankBody("3D/T-34/T-34/T-34.obj", glm::vec3(0.0f, 0.f, 0.f), glm::vec3(.5f));
@@ -205,18 +205,18 @@ int main() {
     pTankTracks->addTexture("3D/T-34/T-34/tex/T-34_Tracks.jpg");
     pTankTracks->addTexture("3D/T-34/T-34/tex/T-34_Tracks_norm.jpg");
     
-    PerspectiveCamera* pPerspectiveCamera = new PerspectiveCamera(glm::vec3(0.f,  105.f, -800.f), glm::vec3(0.f, 3.0f, 0.f), glm::normalize(glm::vec3(0.f, 1.0f, 0.f)), 60.0f, 2500.f);
+    PerspectiveCamera* pPerspectiveCamera = new PerspectiveCamera(glm::vec3(0.f,  105.f, -800.f), glm::vec3(0.f, 3.0f, 0.f), glm::normalize(glm::vec3(0.f, 1.0f, 0.f)), 60.0f, 25000.f);
     OrthoCamera* pOrthoCamera = new OrthoCamera(glm::vec3(0.f, -90.f, -1.f), glm::vec3(0.f, 3.0f, 0.f), glm::normalize(glm::vec3(0.f, 1.0f, 0.0f)), glm::vec3(-1920.0f, -1080.0f, -1000.f), glm::vec3(1920.0f, 1080.0f, 1000.f));
     Camera* pCurrentCamera = pPerspectiveCamera;
 
-    DirectionLight* pMoonLight = new DirectionLight(glm::vec3(4, 100, -3), glm::vec3(80.f / 255.f, 104.f / 255.f, 134.f / 255.f), 1.f, glm::vec3(1, 1, 1), 1.f, 160);
+    DirectionLight* pMoonLight = new DirectionLight(glm::vec3(4, 1000, -3), glm::vec3(80.f / 255.f, 104.f / 255.f, 134.f / 255.f), 0.5f, glm::vec3(1, 1, 1), 3.f, 160);
 
     Model3D* pOctopus = new Octopus("3D/octopus_toy.obj", glm::vec3(100.0f, 0.f, 0.f), glm::vec3(100.f));
     pOctopus->addTexture("3D/octopus_toy_texture.png");
 
     Model3D *pPlane = new Plane("3D/plane.obj", glm::vec3(0.0f, 0.f, 0.f), glm::vec3(100.f));
     pPlane->rotate(glm::vec3(90,0,0));
-    pPlane->scale(glm::vec3(100000.f,100000,100000));
+    //pPlane->scale(glm::vec3(10,10,10));
     pPlane->addTexture("3D/grass.jpg");
 
 
@@ -251,12 +251,12 @@ int main() {
 
         if(wPress && x_mod + 0.3f * (float)deltaTime < MAX_SPEED) {
             x_mod += 0.3f * (float)deltaTime;
-            
             ortho_y_mod += BASE_SPEED * (float)deltaTime;
  
         }
         else if(!wPress && x_mod > 0){
             x_mod -= 1.f * (float)deltaTime;
+            
         }
 
         if(sPress && x_mod - 0.3f * (float)deltaTime > -MAX_SPEED) {

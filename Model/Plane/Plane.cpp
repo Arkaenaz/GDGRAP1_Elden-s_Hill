@@ -98,9 +98,9 @@ void Plane::loadModel(const char *objectPath) {
                     this->fullVertexData.push_back(attributes.vertices[vData.vertex_index * 3]);
                     this->fullVertexData.push_back(attributes.vertices[vData.vertex_index * 3 + 1]);
                     this->fullVertexData.push_back(attributes.vertices[vData.vertex_index * 3 + 2]);
-                    //this->fullVertexData.push_back(attributes.normals[vData.normal_index * 3]);
-                    //this->fullVertexData.push_back(attributes.normals[vData.normal_index * 3 + 1]);
-                    //this->fullVertexData.push_back(attributes.normals[vData.normal_index * 3 + 2]);
+                    this->fullVertexData.push_back(attributes.normals[vData.normal_index * 3]);
+                    this->fullVertexData.push_back(attributes.normals[vData.normal_index * 3 + 1]);
+                    this->fullVertexData.push_back(attributes.normals[vData.normal_index * 3 + 2]);
                     this->fullVertexData.push_back(attributes.texcoords[vData.texcoord_index * 2]);
                     this->fullVertexData.push_back(attributes.texcoords[vData.texcoord_index * 2 + 1]);
                     this->fullVertexData.push_back(tangents[i].x);
@@ -113,7 +113,7 @@ void Plane::loadModel(const char *objectPath) {
 
         }
     }
-    this->nVertexValues = 11;
+    this->nVertexValues = 14;
 }
 
 void Plane::setupVAO() {
