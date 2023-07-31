@@ -27,6 +27,8 @@
 
 #include "Model/Plane/Plane.hpp"
 
+#include "Model/Plane/NoNormal.hpp"
+
 #include "Model/Camera/OrthoCamera.hpp"
 #include "Model/Camera/PerspectiveCamera.hpp"
 
@@ -222,14 +224,32 @@ int main() {
     pOctopus->addTexture("3D/octopus_toy_texture.png");
 
     Model3D *pPlane = new Plane("3D/plane.obj", glm::vec3(0.0f, 0.f, 0.f), glm::vec3(100.f));
-    pPlane->rotate(glm::vec3(90,0,0));
+    pPlane->rotate(glm::vec3(90, 0, 0));
     //pPlane->scale(glm::vec3(10,10,10));
     pPlane->addTexture("3D/grass.jpg");
 
     Model3D *Fridge = new Plane("3D/POIs/Fridge/Fridge.obj", glm::vec3(0.0f, 0.f, 0.f), glm::vec3(100.f));
-    Fridge->addTexture("3D/POIs/Fridge/Fridge.jpg");
-    Fridge->addTexture("3D/POIs/Fridge/Fridge1.jpg");
-    Fridge->scale(glm::vec3(-95, -95, -95));
+    Fridge->addTexture("3D/POIs/Fridge/Fridge.png");
+
+    Model3D *Millie = new Plane("3D/POIs/Millie/Millie.obj", glm::vec3(400.0f, 0.f, 0.f), glm::vec3(100.f));
+    Millie->scale(glm::vec3(-99.5, -99.5, -99.5));
+    Millie->rotate(glm::vec3(0, 45, 0));
+    Millie->addTexture("3D/POIs/Millie/Millie.png");
+
+    Model3D *Tree = new Plane("3D/POIs/Tree/Tree.obj", glm::vec3(0.0f, -300.f, 600.f), glm::vec3(100.f));
+    Tree->scale(glm::vec3(500, 500, 500));
+    Tree->addTexture("3D/POIs/Tree/Tree.png");
+
+    Model3D *Titan = new Plane("3D/POIs/Titan/Titan.obj", glm::vec3(-500.0f, 0.f, 500.f), glm::vec3(100.f));
+    Titan->scale(glm::vec3(-99.5, -99.5, -99.5));
+    Titan->addTexture("3D/POIs/Titan/Titan.png");
+
+    Model3D *Makima = new NoNormal("3D/POIs/Makima/Makima.obj", glm::vec3(-500.0f, 0.f, 700.f), glm::vec3(100.f));
+    Makima->addTexture("3D/POIs/Makima/Makima.png");
+
+    Model3D *Noob = new Plane("3D/POIs/Noob/Noob.obj", glm::vec3(800.0f, 200.f, 300.f), glm::vec3(100.f));
+    Noob->scale(glm::vec3(-70, -70, -70));
+    Noob->addTexture("3D/POIs/Noob/Noob.png");
     
 
     /*float cam_y_mod;
@@ -461,6 +481,11 @@ int main() {
         //pOctopus->draw(CShaders);
         pPlane->draw(CShaders);
         Fridge->draw(CShaders);
+        Millie->draw(CShaders);
+        Tree->draw(CShaders);
+        Titan->draw(CShaders);
+        Makima->draw(CShaders);
+        Noob->draw(CShaders);
 
         /* Swap front and back buffers */
         glfwSwapBuffers(window);
