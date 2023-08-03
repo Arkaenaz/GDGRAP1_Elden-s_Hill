@@ -10,6 +10,8 @@
 
 #include "Drawable.hpp"
 
+// skybox class
+
 namespace models {
 	class Skybox : public Drawable { 
 		private:

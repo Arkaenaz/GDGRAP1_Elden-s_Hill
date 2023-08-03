@@ -33,9 +33,6 @@
     <ClCompile Include="Model\Camera.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Model\Object\Player.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Model\Camera\OrthoCamera.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -57,16 +54,10 @@
     <ClCompile Include="Model\Skybox.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Model\TempModels\Octopus.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Model\Tank\TankTracks.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Model\Plane\Plane.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Source.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Model\Plane\NoNormal.cpp">
@@ -87,9 +78,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Model\Light.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Model\Object\Player.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Model\Shaders.hpp">
@@ -122,9 +110,6 @@
     <ClInclude Include="Model\Drawable.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Model\TempModels\Octopus.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Model\Tank\TankTracks.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -132,6 +117,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Model\Plane\NoNormal.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Model\Plane\Plane.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

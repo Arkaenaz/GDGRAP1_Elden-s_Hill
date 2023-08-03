@@ -19,12 +19,16 @@ namespace models {
 			Camera(glm::vec3 vecPosition, glm::vec3 vecCenter, glm::vec3 worldUp);
 			~Camera();
 
+		// updates camera vectors
 		protected:
 			void updateVectors();
 
 		public:
+			// moves camera
 			void move(glm::vec3 vecMove);
+			// rotates camera around a point
 			void rotateAround(glm::vec3 vecPoint, glm::vec3 vecRotate);
+			// check if it can rotate around
 			glm::vec3 checkRotateAround(glm::vec3 vecPoint, glm::vec3 vecRotate);
 
 		public:

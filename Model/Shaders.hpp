@@ -10,6 +10,8 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <glad/glad.h>
 
+// shader class
+
 namespace models {
 	class Shaders {
 		private:
@@ -23,6 +25,7 @@ namespace models {
 			void use();
 
 		public:
+			// sets values inside the shader
 			void setInt(const std::string &strName, int nValue);
 			void setFloat(const std::string& strName, float fValue);
 			void setFloatVec3(const std::string& strName, glm::vec3 vecValue);

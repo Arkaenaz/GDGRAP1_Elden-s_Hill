@@ -2,7 +2,7 @@
 #define MODELS_BUS_HPP
 
 #include "../Model3D.hpp"
-
+// model 3d but loads no normals
 namespace models {
 	class NoNormal : public Model3D {
 		public:

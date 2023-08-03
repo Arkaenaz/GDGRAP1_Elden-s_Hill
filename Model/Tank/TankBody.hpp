@@ -3,7 +3,7 @@
 
 #include "../Model3D.hpp"
 
-
+// tank body model
 namespace models {
 	class TankBody : public Model3D{
 

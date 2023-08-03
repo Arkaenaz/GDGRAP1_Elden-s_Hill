@@ -3,7 +3,7 @@
 
 #include "../Model3D.hpp"
 
-
+// tank tracks model
 namespace models {
 	class TankTracks : public Model3D {
 

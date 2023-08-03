@@ -117,7 +117,7 @@ void Model3D::loadModel(const char* objectPath) {
         }
     }
 }
-
+// adds texture
 void Model3D::addTexture(const char* texturePath) {
     int img_width, img_height, colorChannels;
     stbi_set_flip_vertically_on_load(true);
@@ -144,7 +144,7 @@ void Model3D::addTexture(const char* texturePath) {
     this->textures.push_back(texture);
 }
 
-
+// initializes vao
 void Model3D::setupVAO() {
     //this->nVertexValues = 14;
     GLuint VBO;
@@ -179,7 +179,7 @@ void Model3D::setupVAO() {
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindVertexArray(0);
 }
-
+// sets shader values
 void Model3D::setShaderValues(Shaders& CShaders) {
     CShaders.setFloatMat4("transform", this->getTransformation());
 

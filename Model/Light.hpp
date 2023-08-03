@@ -25,8 +25,11 @@ namespace models {
 			~Light();
 
 		public:
+			// moves light
 			void move(glm::vec3 vecMove);
+			// intensifies light
 			void intensify(float fIntensify);
+			// rotates light around a point
 			void rotateAround(glm::vec3 vecPoint, glm::vec3 vecRotate);
 
 		public:

@@ -2,7 +2,7 @@
 #define PLANE_MODELS_H
 
 #include "../Model3D.hpp"
-
+// model 3d with normals
 namespace models {
 	class Plane : public Model3D {
 		public:

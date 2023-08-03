@@ -142,7 +142,6 @@
     <ClCompile Include="Model\Light\DirectionLight.cpp" />
     <ClCompile Include="Model\Light\PointLight.cpp" />
     <ClCompile Include="Model\Model3D.cpp" />
-    <ClCompile Include="Model\Object\Player.cpp" />
     <ClCompile Include="Model\Plane\NoNormal.cpp" />
     <ClCompile Include="Model\Plane\Plane.cpp" />
     <ClCompile Include="Model\Shaders.cpp" />
@@ -150,8 +149,6 @@
     <ClCompile Include="Model\Tank\TankBody.cpp" />
     <ClCompile Include="Model\Tank\TankTracks.cpp" />
     <ClCompile Include="Model\Tank\TankTurret.cpp" />
-    <ClCompile Include="Model\TempModels\Octopus.cpp" />
-    <ClCompile Include="Source.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Config\Settings.hpp" />
@@ -163,15 +160,14 @@
     <ClInclude Include="Model\Light\PointLight.hpp" />
     <ClInclude Include="Model\Model3D.hpp" />
     <ClInclude Include="Model\Drawable.hpp" />
-    <ClInclude Include="Model\Object\Player.hpp" />
     <ClInclude Include="Model\Plane\NoNormal.hpp" />
     <ClInclude Include="Model\Plane\Plane.h" />
+    <ClInclude Include="Model\Plane\Plane.hpp" />
     <ClInclude Include="Model\Shaders.hpp" />
     <ClInclude Include="Model\Skybox.hpp" />
     <ClInclude Include="Model\Tank\TankBody.hpp" />
     <ClInclude Include="Model\Tank\TankTracks.hpp" />
     <ClInclude Include="Model\Tank\TankTurret.hpp" />
-    <ClInclude Include="Model\TempModels\Octopus.hpp" />
     <ClInclude Include="stb_image.h" />
     <ClInclude Include="tiny_obj_loader.h" />
   </ItemGroup>

@@ -23,7 +23,7 @@
 
 #include "Drawable.hpp"
 
-
+// model class
 namespace models {
 	class Model3D : public Drawable {
 		protected:
@@ -60,7 +60,6 @@ namespace models {
 		public:
 			void move(glm::vec3 vecMove);
 			void scale(glm::vec3 vecScale);
-			void rotateQuat(glm::vec3 vecRotate);
 			void rotate(glm::vec3 vecRotate);
 			void rotateAround(glm::vec3 vecPoint, glm::vec3 vecRotate);
 
