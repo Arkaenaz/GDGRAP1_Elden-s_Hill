@@ -23,7 +23,9 @@ namespace cameras {
 			~PerspectiveCamera();
 
 		public:
+			// updates values when third person
 			void updateTP(glm::vec3 vecRotate, glm::vec3 vecPoint);
+			// updates values when first person
 			void updateFP(glm::vec3 vecRotate, glm::vec3 vecPoint);
 		public:
 			void addYaw(float fYaw);
